@@ -1,7 +1,17 @@
+using Microsoft.EntityFrameworkCore;
+using TaskFlow.Infrastructure;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+
+// Register DbContext with connection string
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
+builder.Services.AddDbContext<TaskFlowDbContext>(options =>
+options.UseSqlServer(connectionString));
 
 var app = builder.Build();
 
