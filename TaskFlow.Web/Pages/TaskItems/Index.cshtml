@@ -1,0 +1,36 @@
+﻿@page
+@model TaskFlow.Web.Pages.TaskItems.IndexModel
+@{
+}
+
+<h2>Task List</h2>
+<a asp-page="Create" class="btn btn-primary mb-2">Add New Task</a>
+
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Priority</th>
+            <th>Status</th>
+            <th>Due Date</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Tasks)
+        {
+            <tr>
+                <td>@item.Title</td>
+                <td>@item.Priority</td>
+                <td>@item.Status</td>
+                <td>@item.DueDate?.ToShortDateString()</td>
+                <td>
+                    <a asp-page="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-page="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-page="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
