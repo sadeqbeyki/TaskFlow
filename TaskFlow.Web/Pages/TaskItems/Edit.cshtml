@@ -1,0 +1,49 @@
+﻿@page "{id:guid}"
+@model TaskFlow.Web.Pages.TaskItems.EditModel
+@{
+}
+
+<h2>Edit Task</h2>
+<form method="post">
+    <input type="hidden" asp-for="TaskItem.Id" />
+
+
+    <div class="mb-3">
+        <label asp-for="TaskItem.Title" class="form-label"></label>
+        <input asp-for="TaskItem.Title" class="form-control" />
+        <span asp-validation-for="TaskItem.Title" class="text-danger"></span>
+    </div>
+
+
+    <div class="mb-3">
+        <label asp-for="TaskItem.Description" class="form-label"></label>
+<textarea asp-for="TaskItem.Description" class="form-control"></textarea>
+    </div>
+
+
+    <div class="mb-3">
+        <label asp-for="TaskItem.Priority" class="form-label"></label>
+        <select asp-for="TaskItem.Priority" class="form-select" asp-items="Html.GetEnumSelectList<TaskPriority>()"></select>
+    </div>
+
+
+    <div class="mb-3">
+        <label asp-for="TaskItem.Status" class="form-label"></label>
+        <select asp-for="TaskItem.Status" class="form-select" asp-items="Html.GetEnumSelectList<TaskStatus>()"></select>
+    </div>
+
+
+    <div class="mb-3">
+        <label asp-for="TaskItem.DueDate" class="form-label"></label>
+        <input asp-for="TaskItem.DueDate" type="date" class="form-control" />
+    </div>
+
+
+    <button type="submit" class="btn btn-success">Save</button>
+    <a asp-page="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
