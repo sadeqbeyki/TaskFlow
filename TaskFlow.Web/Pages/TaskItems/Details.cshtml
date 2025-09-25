@@ -1,0 +1,20 @@
+﻿@page "{id:guid}"
+@model TaskFlow.Web.Pages.TaskItems.DetailsModel
+@{
+}
+
+
+<h2>Task Details</h2>
+<div class="card">
+<div class="card-body">
+<h5>@Model.TaskItem.Title</h5>
+<p>@Model.TaskItem.Description</p>
+<ul>
+<li>Priority: @Model.TaskItem.Priority</li>
+<li>Status: @Model.TaskItem.Status</li>
+<li>Due Date: @Model.TaskItem.DueDate?.ToShortDateString()</li>
+</ul>
+<a asp-page="Edit" asp-route-id="@Model.TaskItem.Id" class="btn btn-primary">Edit</a>
+<a asp-page="Index" class="btn btn-secondary">Back</a>
+</div>
+</div>
