@@ -33,15 +33,25 @@ namespace TaskFlow.Web.Pages.TaskItems
 
         public async Task<IActionResult> OnPostAsync(Guid id)
         {
-            var task = await _context.TaskItems.FindAsync(id);
-            if (task != null)
+            try
             {
-                _context.TaskItems.Remove(task);
-                await _context.SaveChangesAsync();
+
+
+                var task = await _context.TaskItems.FindAsync(id);
+                if (task != null)
+                {
+                    _context.TaskItems.Remove(task);
+                    await _context.SaveChangesAsync();
+                }
+
+
+                return RedirectToPage("Index");
             }
-
-
-            return RedirectToPage("Index");
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, $"An error has occurred.: {ex.Message}");
+                return Page();
+            }
         }
     }
 }

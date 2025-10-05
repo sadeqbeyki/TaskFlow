@@ -34,12 +34,25 @@ namespace TaskFlow.Web.Pages.TaskItems
             }
 
 
-            TaskItem.CreatedAt = DateTime.UtcNow;
-            _context.TaskItems.Add(TaskItem);
-            await _context.SaveChangesAsync();
+            //TaskItem.CreatedAt = DateTime.UtcNow;
+            //_context.TaskItems.Add(TaskItem);
+            //await _context.SaveChangesAsync();
 
 
-            return RedirectToPage("Index");
+            //return RedirectToPage("Index");
+
+
+            try
+            {
+                _context.Add(TaskItem);
+                await _context.SaveChangesAsync();
+                return RedirectToPage("Index");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, $"An error has occurred.: {ex.Message}");
+                return Page();
+            }
         }
     }
 }

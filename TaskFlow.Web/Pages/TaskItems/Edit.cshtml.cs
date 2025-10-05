@@ -37,13 +37,20 @@ namespace TaskFlow.Web.Pages.TaskItems
             if (!ModelState.IsValid)
                 return Page();
 
+            try
+            {
+                _context.Attach(TaskItem).State = EntityState.Modified;
+                TaskItem.UpdatedAt = DateTime.UtcNow;
 
-            _context.Attach(TaskItem).State = EntityState.Modified;
-            TaskItem.UpdatedAt = DateTime.UtcNow;
 
-
-            await _context.SaveChangesAsync();
-            return RedirectToPage("Index");
+                await _context.SaveChangesAsync();
+                return RedirectToPage("Index");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, $"An error has occurred.: {ex.Message}");
+                return Page();
+            }
         }
     }
 }
