@@ -4,6 +4,11 @@
 @{
 }
 
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success">@TempData["Message"]</div>
+}
+
 <h2>Edit Task</h2>
 <partial name="_ValidationScriptsPartial" />
 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
