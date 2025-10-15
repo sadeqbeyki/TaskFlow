@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using TaskFlow.Core;
 using TaskFlow.Infrastructure;
+using TaskFlow.Web.ViewModels;
 
 namespace TaskFlow.Web.Pages.TaskItems
 {
@@ -17,7 +19,7 @@ namespace TaskFlow.Web.Pages.TaskItems
 
 
         [BindProperty]
-        public TaskItem TaskItem { get; set; } = new();
+        public TaskInputModel taskItem { get; set; } = new();
 
 
         public IActionResult OnGet()
@@ -33,19 +35,20 @@ namespace TaskFlow.Web.Pages.TaskItems
                 return Page();
             }
 
-
-            //TaskItem.CreatedAt = DateTime.UtcNow;
-            //_context.TaskItems.Add(TaskItem);
-            //await _context.SaveChangesAsync();
-
-
-            //return RedirectToPage("Index");
+            var task = new TaskItem(
+                title: taskItem.Title,
+                description: taskItem.Description,
+                dueDate: taskItem.DueDate,
+                priority: taskItem.Priority,
+                projectId: taskItem.ProjectId
+            );
 
 
             try
             {
-                _context.Add(TaskItem);
+                _context.TaskItems.Add(task);
                 await _context.SaveChangesAsync();
+                TempData["Message"] = "Task created successfully.";
                 return RedirectToPage("Index");
             }
             catch (Exception ex)

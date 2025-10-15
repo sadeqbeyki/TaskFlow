@@ -13,38 +13,38 @@
 <partial name="_ValidationScriptsPartial" />
 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 <form method="post">
-    <input type="hidden" asp-for="TaskItem.Id" />
+    <input type="hidden" asp-for="@Model.Id" />
 
 
     <div class="mb-3">
-        <label asp-for="TaskItem.Title" class="form-label"></label>
-        <input asp-for="TaskItem.Title" class="form-control" />
-        <span asp-validation-for="TaskItem.Title" class="text-danger"></span>
+        <label asp-for="taskInputModel.Title" class="form-label"></label>
+        <input asp-for="taskInputModel.Title" class="form-control" />
+        <span asp-validation-for="taskInputModel.Title" class="text-danger"></span>
     </div>
 
 
     <div class="mb-3">
-        <label asp-for="TaskItem.Description" class="form-label"></label>
-        <textarea asp-for="TaskItem.Description" class="form-control"></textarea>
-        <span asp-validation-for="TaskItem.Description" class="text-danger"></span>
+        <label asp-for="taskInputModel.Description" class="form-label"></label>
+        <textarea asp-for="taskInputModel.Description" class="form-control"></textarea>
+        <span asp-validation-for="taskInputModel.Description" class="text-danger"></span>
     </div>
 
 
     <div class="mb-3">
-        <label asp-for="TaskItem.Priority" class="form-label"></label>
-        <select asp-for="TaskItem.Priority" class="form-select" asp-items="Html.GetEnumSelectList<TaskItemPriority>()"></select>
+        <label asp-for="taskInputModel.Priority" class="form-label"></label>
+        <select asp-for="taskInputModel.Priority" class="form-select" asp-items="Html.GetEnumSelectList<TaskItemPriority>()"></select>
     </div>
 
 
     <div class="mb-3">
-        <label asp-for="TaskItem.Status" class="form-label"></label>
-        <select asp-for="TaskItem.Status" class="form-select" asp-items="Html.GetEnumSelectList<TaskStatus>()"></select>
+        <label asp-for="taskInputModel.Status" class="form-label"></label>
+        <select asp-for="taskInputModel.Status" class="form-select" asp-items="Html.GetEnumSelectList<TaskStatus>()"></select>
     </div>
 
 
     <div class="mb-3">
-        <label asp-for="TaskItem.DueDate" class="form-label"></label>
-        <input asp-for="TaskItem.DueDate" type="date" class="form-control" />
+        <label asp-for="taskInputModel.DueDate" class="form-label"></label>
+        <input asp-for="taskInputModel.DueDate" type="date" class="form-control" />
     </div>
 
 
