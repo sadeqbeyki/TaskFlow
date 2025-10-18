@@ -22,7 +22,7 @@ public class TaskItem
     /*private*/ public TaskItem() { }  // For EF Core
 
 
-    public TaskItem(string title, string? description, Guid projectId, DateTime? dueDate = null,
+    public TaskItem(string title, string? description, Guid? projectId, DateTime? dueDate = null,
         TaskItemPriority priority = TaskItemPriority.Medium)
     {
         if (string.IsNullOrWhiteSpace(title))
@@ -41,7 +41,7 @@ public class TaskItem
     public Guid Id { get; private set; } = Guid.NewGuid();
     [Required(ErrorMessage = "Title is required.")]
     [StringLength(100, ErrorMessage = "The title should not exceed 100 characters.")]
-    public string Title { get; private set; }
+    public string Title { get; private set; } =string.Empty;
     [StringLength(500, ErrorMessage = "Descriptions should not exceed 500 characters.")]
     public string? Description { get; private set; }
     public DateTime? DueDate { get; private set; }
@@ -49,7 +49,7 @@ public class TaskItem
     public TaskItemPriority Priority { get; private set; }
     public TaskItemStatus Status { get; private set; }
 
-    public Guid ProjectId { get; private set; }
+    public Guid? ProjectId { get; private set; }
     public Project? Project { get; private set; }
 
     [DataType(DataType.Date)]
