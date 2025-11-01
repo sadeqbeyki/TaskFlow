@@ -4,16 +4,19 @@ namespace TaskFlow.Core;
 
 public class Project
 {
-    // Constructor for EF Core
-    private Project() { }
+    // Parameterless Constructor for EF Core and object initializers
+
+    public Project()
+    {
+        Tasks = new List<TaskItem>();
+    }
+
 
     // Constructor for creating a new project in domain logic
     public Project(string title, string? description, Guid ownerId)
     {
-        if (string.IsNullOrWhiteSpace(title))
-            throw new ArgumentException("Project title cannot be empty.");
+        Title = string.IsNullOrWhiteSpace(title) ? throw new ArgumentException("Title cannot be empty.") : title.Trim();
 
-        Title = title.Trim();
         Description = description?.Trim();
         OwnerId = ownerId;
         CreatedAt = DateTime.UtcNow;
@@ -42,13 +45,14 @@ public class Project
 
 
     // Domain Behaviors
-    public void UpdateDetails(string title, string? description)
+    public void UpdateDetails(string title, string? description, Guid ownerId)
     {
         if (string.IsNullOrWhiteSpace(title))
             throw new ArgumentException("Project title cannot be empty.");
 
         Title = title.Trim();
         Description = description?.Trim();
+        OwnerId = ownerId;
         UpdatedAt = DateTime.UtcNow;
     }
 

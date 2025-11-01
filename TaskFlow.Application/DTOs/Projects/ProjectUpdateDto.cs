@@ -2,6 +2,6 @@
 
 public class ProjectUpdateDto
 {
-    public string Name { get; set; } = default!;
+    public string Title { get; set; } = default!;
     public string? Description { get; set; }
 }
