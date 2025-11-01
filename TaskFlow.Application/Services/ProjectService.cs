@@ -57,14 +57,14 @@ public class ProjectService : IProjectService
         return project.Id;
     }
 
-    public async Task<bool> UpdateAsync(Guid id, ProjectUpdateDto dto, Guid ownerId)
+    public async Task<bool> UpdateAsync(Guid projectId, ProjectUpdateDto dto, Guid ownerId)
     {
-        var project = await _context.Projects.FirstOrDefaultAsync(p => p.Id == id && p.OwnerId == ownerId);
+        var project = await _context.Projects.FirstOrDefaultAsync(p => p.Id == projectId && p.OwnerId == ownerId);
 
         if (project is null)
             return false;
 
-        project.UpdateDetails(dto.Title, dto.Description);
+        project.UpdateDetails(dto.Title.Trim(), dto.Description);
 
         await _context.SaveChangesAsync();
         return true;
