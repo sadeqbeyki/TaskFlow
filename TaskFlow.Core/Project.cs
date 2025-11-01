@@ -45,14 +45,13 @@ public class Project
 
 
     // Domain Behaviors
-    public void UpdateDetails(string title, string? description, Guid ownerId)
+    public void UpdateDetails(string title, string? description)
     {
         if (string.IsNullOrWhiteSpace(title))
             throw new ArgumentException("Project title cannot be empty.");
 
         Title = title.Trim();
         Description = description?.Trim();
-        OwnerId = ownerId;
         UpdatedAt = DateTime.UtcNow;
     }
 

@@ -64,7 +64,7 @@ public class ProjectService : IProjectService
         if (project is null)
             return false;
 
-        project.UpdateDetails(dto.Title, dto.Description, ownerId);
+        project.UpdateDetails(dto.Title, dto.Description);
 
         await _context.SaveChangesAsync();
         return true;
