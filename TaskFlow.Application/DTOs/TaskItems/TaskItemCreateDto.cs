@@ -16,4 +16,3 @@ public class TaskItemCreateDto
     public TaskItemPriority Priority { get; set; } = TaskItemPriority.Medium;
     public Guid ProjectId { get; set; } // The project this task belongs to
 }
-
