@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TaskFlow.Core;
+﻿using TaskFlow.Core;
 
 namespace TaskFlow.Application.DTOs.TaskItems;
 
@@ -14,5 +9,7 @@ public class TaskItemCreateDto
     public string? Description { get; set; }
     public DateTime? DueDate { get; set; }
     public TaskItemPriority Priority { get; set; } = TaskItemPriority.Medium;
-    public Guid ProjectId { get; set; } // The project this task belongs to
+
+    // required: the project this task belongs to
+    public Guid ProjectId { get; set; }
 }
