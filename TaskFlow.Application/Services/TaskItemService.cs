@@ -27,4 +27,23 @@ public class TaskItemService
 
         return TaskItemMapper.ToDto(task);
     }
+
+    public async Task<List<TaskItemDto>> GetAllByProjectAsync(Guid projectId, Guid ownerId)
+    {
+        // Validate project ownership (prevents exposing tasks of other users)
+        var project = await _context.Projects
+            .AsNoTracking()
+            .FirstOrDefaultAsync(p => p.Id == projectId && p.OwnerId == ownerId);
+
+        if (project == null) return new List<TaskItemDto>();
+
+        var tasks = await _context.TaskItems
+            .AsNoTracking()
+            .Where(t => t.ProjectId == projectId)
+            .OrderByDescending(t => t.CreatedAt)
+            .ToListAsync();
+
+        return tasks.Select(TaskItemMapper.ToDto).ToList();
+    }
+
 }
