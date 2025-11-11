@@ -11,4 +11,6 @@ internal interface ITaskItemService
 {
     Task<TaskItemDto?> GetByIdAsync(Guid id, Guid ownerId);
     Task<List<TaskItemDto>> GetAllByProjectAsync(Guid projectId, Guid ownerId);
+
+    Task<Guid> CreateAsync(TaskItemCreateDto dto, Guid ownerId);
 }

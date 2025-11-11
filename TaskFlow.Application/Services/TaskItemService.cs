@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TaskFlow.Application.DTOs.TaskItems;
 using TaskFlow.Application.Mappers;
+using TaskFlow.Core;
 using TaskFlow.Infrastructure;
 
 namespace TaskFlow.Application.Services;
@@ -44,6 +45,27 @@ public class TaskItemService
             .ToListAsync();
 
         return tasks.Select(TaskItemMapper.ToDto).ToList();
+    }
+
+    public async Task<Guid> CreateAsync(TaskItemCreateDto dto, Guid ownerId)
+    {
+        // Validate project exists and belongs to owner
+        var project = await _context.Projects.FirstOrDefaultAsync(p => p.Id == dto.ProjectId && p.OwnerId == ownerId) 
+            ?? throw new InvalidOperationException("Project not found or you do not have permission.");
+
+        // Create domain entity using constructor (DDD-friendly)
+        var task = new TaskItem(
+            title: dto.Title.Trim(),
+            description: dto.Description,
+            projectId: dto.ProjectId,
+            dueDate: dto.DueDate,
+            priority: dto.Priority
+        );
+
+        _context.TaskItems.Add(task);
+        await _context.SaveChangesAsync();
+
+        return task.Id;
     }
 
 }
