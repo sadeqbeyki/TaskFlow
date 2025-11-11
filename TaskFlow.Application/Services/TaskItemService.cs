@@ -68,4 +68,19 @@ public class TaskItemService
         return task.Id;
     }
 
+    public async Task<bool> UpdateAsync(Guid id, TaskItemUpdateDto dto, Guid ownerId)
+    {
+        var task = await _context.TaskItems
+            .Include(t => t.Project)
+            .FirstOrDefaultAsync(t => t.Id == id);
+
+        if (task == null) return false;
+        if (task.Project != null && task.Project.OwnerId != ownerId) return false; // not authorized
+
+        // Use domain behavior to update fields
+        task.UpdateDetails(dto.Title.Trim(), dto.Description, dto.DueDate, dto.Priority);
+
+        await _context.SaveChangesAsync();
+        return true;
+    }
 }
