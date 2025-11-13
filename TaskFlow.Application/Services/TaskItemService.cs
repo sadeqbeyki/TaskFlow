@@ -83,4 +83,18 @@ public class TaskItemService
         await _context.SaveChangesAsync();
         return true;
     }
+
+    public async Task<bool> DeleteAsync(Guid id, Guid ownerId)
+    {
+        var task = await _context.TaskItems
+            .Include(t => t.Project)
+            .FirstOrDefaultAsync(t => t.Id == id);
+
+        if (task == null) return false;
+        if (task.Project != null && task.Project.OwnerId != ownerId) return false; // not authorized
+
+        _context.TaskItems.Remove(task);
+        await _context.SaveChangesAsync();
+        return true;
+    }
 }
