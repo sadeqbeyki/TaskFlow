@@ -5,7 +5,7 @@ namespace TaskFlow.Application.Mappers;
 
 public static class TaskItemMapper
 {
-    public static TaskItemDto ToDto(TaskItem t)
+    public static TaskItemDto MapToDto(TaskItem t)
     {
         if (t == null) return null!; // caller باید null-check کند یا از nullable return استفاده کند
 

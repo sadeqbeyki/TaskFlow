@@ -26,7 +26,7 @@ public class TaskItemService
         if (task == null) return null;
         if (task.Project != null && task.Project.OwnerId != ownerId) return null; // not authorized
 
-        return TaskItemMapper.ToDto(task);
+        return TaskItemMapper.MapToDto(task);
     }
 
     public async Task<List<TaskItemDto>> GetAllByProjectAsync(Guid projectId, Guid ownerId)
@@ -44,7 +44,7 @@ public class TaskItemService
             .OrderByDescending(t => t.CreatedAt)
             .ToListAsync();
 
-        return tasks.Select(TaskItemMapper.ToDto).ToList();
+        return tasks.Select(TaskItemMapper.MapToDto).ToList();
     }
 
     public async Task<Guid> CreateAsync(TaskItemCreateDto dto, Guid ownerId)

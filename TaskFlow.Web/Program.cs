@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using TaskFlow.Application.Interfaces;
+using TaskFlow.Application.Services;
 using TaskFlow.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +14,9 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 builder.Services.AddDbContext<TaskFlowDbContext>(options =>
 options.UseSqlServer(connectionString));
+
+
+builder.Services.AddScoped<ITaskItemService, TaskItemService>();
 
 var app = builder.Build();
 
