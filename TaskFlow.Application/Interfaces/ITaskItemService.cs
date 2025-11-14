@@ -15,4 +15,6 @@ internal interface ITaskItemService
     Task<Guid> CreateAsync(TaskItemCreateDto dto, Guid ownerId);
     Task<bool> UpdateAsync(Guid id, TaskItemUpdateDto dto, Guid ownerId);
     Task<bool> DeleteAsync(Guid id, Guid ownerId);
+
+    Task<bool> ChangeStatusAsync(Guid id, TaskItemStatusUpdateDto dto, Guid ownerId);
 }
