@@ -17,4 +17,5 @@ public interface ITaskItemService
     Task<bool> DeleteAsync(Guid id, Guid ownerId);
 
     Task<bool> ChangeStatusAsync(Guid id, TaskItemStatusUpdateDto dto, Guid ownerId);
+    Task<bool> MarkInProgressAsync(Guid id, Guid ownerId);
 }

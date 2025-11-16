@@ -17,6 +17,7 @@ options.UseSqlServer(connectionString));
 
 
 builder.Services.AddScoped<ITaskItemService, TaskItemService>();
+builder.Services.AddScoped<IProjectService, ProjectService>();
 
 var app = builder.Build();
 

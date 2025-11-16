@@ -35,17 +35,24 @@ public class TaskItemService : ITaskItemService
         // Validate project ownership (prevents exposing tasks of other users)
         var project = await _context.Projects
             .AsNoTracking()
+            .Include(x => x.Tasks)
             .FirstOrDefaultAsync(p => p.Id == projectId && p.OwnerId == ownerId);
 
         if (project == null) return new List<TaskItemDto>();
+        if (project.OwnerId != ownerId) return new List<TaskItemDto>();
 
-        var tasks = await _context.TaskItems
-            .AsNoTracking()
-            .Where(t => t.ProjectId == projectId)
-            .OrderByDescending(t => t.CreatedAt)
-            .ToListAsync();
+        //var tasks = await _context.TaskItems
+        //    .AsNoTracking()
+        //    .Where(t => t.ProjectId == projectId)
+        //    .OrderByDescending(t => t.CreatedAt)
+        //    .ToListAsync();
 
-        return tasks.Select(TaskItemMapper.MapToDto).ToList();
+        //return tasks.Select(TaskItemMapper.MapToDto).ToList();
+
+
+        return project.Tasks!
+            .Select(TaskItemMapper.MapToDto)
+            .ToList();
     }
 
     public async Task<Guid> CreateAsync(TaskItemCreateDto dto, Guid ownerId)
@@ -128,6 +135,19 @@ public class TaskItemService : ITaskItemService
                 break;
         }
 
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
+    // ---------------------------------------------------------
+    // Status changes
+    // ---------------------------------------------------------
+    public async Task<bool> MarkInProgressAsync(Guid id, Guid ownerId)
+    {
+        var task = await _context.TaskItems.Include(t => t.Project).FirstOrDefaultAsync(t => t.Id == id);
+        if (task == null || task.Project?.OwnerId != ownerId) return false;
+
+        task.MarkInProgress();
         await _context.SaveChangesAsync();
         return true;
     }
