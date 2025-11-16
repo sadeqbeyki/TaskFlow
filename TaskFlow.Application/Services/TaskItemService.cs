@@ -161,4 +161,14 @@ public class TaskItemService : ITaskItemService
         await _context.SaveChangesAsync();
         return true;
     }
+
+    public async Task<bool> ReopenAsync(Guid id, Guid ownerId)
+    {
+        var task = await _context.TaskItems.Include(t => t.Project).FirstOrDefaultAsync(t => t.Id == id);
+        if (task == null || task.Project?.OwnerId != ownerId) return false;
+
+        task.Reopen();
+        await _context.SaveChangesAsync();
+        return true;
+    }
 }
