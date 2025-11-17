@@ -1,4 +1,4 @@
-﻿using TaskFlow.Core;
+﻿using TaskFlow.Core.Entities;
 
 namespace TaskFlow.Application.DTOs.TaskItems;
 

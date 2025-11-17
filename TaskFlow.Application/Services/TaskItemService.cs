@@ -2,7 +2,7 @@
 using TaskFlow.Application.DTOs.TaskItems;
 using TaskFlow.Application.Interfaces;
 using TaskFlow.Application.Mappers;
-using TaskFlow.Core;
+using TaskFlow.Core.Entities;
 using TaskFlow.Infrastructure;
 
 namespace TaskFlow.Application.Services;

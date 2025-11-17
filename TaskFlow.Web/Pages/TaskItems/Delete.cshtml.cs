@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using TaskFlow.Core;
+using TaskFlow.Core.Entities;
 using TaskFlow.Infrastructure;
 
 namespace TaskFlow.Web.Pages.TaskItems

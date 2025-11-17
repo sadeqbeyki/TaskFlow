@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TaskFlow.Core;
+using TaskFlow.Core.Entities;
 
 namespace TaskFlow.Infrastructure;
 

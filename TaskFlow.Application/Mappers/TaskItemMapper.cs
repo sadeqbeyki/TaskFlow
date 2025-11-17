@@ -1,5 +1,5 @@
 ﻿using TaskFlow.Application.DTOs.TaskItems;
-using TaskFlow.Core;
+using TaskFlow.Core.Entities;
 
 namespace TaskFlow.Application.Mappers;
 

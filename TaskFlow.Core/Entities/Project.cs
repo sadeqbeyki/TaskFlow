@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TaskFlow.Core;
+namespace TaskFlow.Core.Entities;
 
 public class Project
 {
