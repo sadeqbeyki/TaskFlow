@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TaskFlow.Infrastructure\TaskFlow.Infrastructure.csproj" />
+    <ProjectReference Include="..\TaskFlow.Core\TaskFlow.Core.csproj" />
   </ItemGroup>
 
 </Project>

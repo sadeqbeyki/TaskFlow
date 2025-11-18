@@ -4,16 +4,19 @@ using TaskFlow.Core.Repositories;
 
 namespace TaskFlow.Infrastructure.Repositories;
 
-public class ProjectRepository : Repository<Project>, IProjectRepository
+public class ProjectRepository : GenericRepository<Project, Guid>, IProjectRepository
 {
     public ProjectRepository(TaskFlowDbContext context)
         : base(context) { }
 
     public async Task<List<Project>> GetByOwnerAsync(Guid ownerId)
     {
-        return await _db
+        return await _dbSet
+            .AsNoTracking()//
             .Where(p => p.OwnerId == ownerId)
             .Include(p => p.Tasks)
             .ToListAsync();
     }
+
+
 }

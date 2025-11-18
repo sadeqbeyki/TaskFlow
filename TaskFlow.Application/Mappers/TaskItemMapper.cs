@@ -1,4 +1,5 @@
-﻿using TaskFlow.Application.DTOs.TaskItems;
+﻿using TaskFlow.Application.DTOs.Projects;
+using TaskFlow.Application.DTOs.TaskItems;
 using TaskFlow.Core.Entities;
 
 namespace TaskFlow.Application.Mappers;
@@ -27,3 +28,21 @@ public static class TaskItemMapper
     // برای DDD ترجیحاً ایجاد Entity با سازنده دامنه انجام شود (نه Map مستقیم).
 }
 
+
+
+public static class ProjectMapper
+{
+    public static ProjectDto MapToDto(Project p)
+    {
+        if (p == null) return null!; 
+
+        return new ProjectDto
+        {
+            Id = p.Id.ToString(),
+            Title = p.Title,
+            Description = p.Description,
+            CreatedAt = p.CreatedAt,
+            UpdatedAt = p.UpdatedAt
+        };
+    }
+}

@@ -2,7 +2,7 @@
 
 namespace TaskFlow.Core.Repositories
 {
-    public interface IProjectRepository : IRepository<Project>
+    public interface IProjectRepository : IGenericRepository<Project,Guid>
     {
         Task<List<Project>> GetByOwnerAsync(Guid ownerId);
     }

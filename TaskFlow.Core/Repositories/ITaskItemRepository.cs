@@ -2,7 +2,7 @@
 
 namespace TaskFlow.Core.Repositories
 {
-    public interface ITaskItemRepository : IRepository<TaskItem>
+    public interface ITaskItemRepository : IGenericRepository<TaskItem, Guid>
     {
         Task<List<TaskItem>> GetByProjectAsync(Guid projectId);
         Task<List<TaskItem>> GetByStatusAsync(TaskItemStatus status);

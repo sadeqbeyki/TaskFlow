@@ -1,26 +1,31 @@
-﻿using Microsoft.EntityFrameworkCore;
-using TaskFlow.Application.DTOs.Projects;
+﻿using TaskFlow.Application.DTOs.Projects;
 using TaskFlow.Application.Interfaces;
-using TaskFlow.Core;
-using TaskFlow.Infrastructure;
+using TaskFlow.Core.Entities;
+using TaskFlow.Core.Repositories;
 
 namespace TaskFlow.Application.Services;
 
-
 public class ProjectService : IProjectService
 {
-    private readonly TaskFlowDbContext _context;
+    private readonly IGenericRepository<Project, Guid> _genericRepository;
+    private readonly IProjectRepository _projectRepository;
 
-    public ProjectService(TaskFlowDbContext context)
+    public ProjectService(IGenericRepository<Project, Guid> genericRepository, IProjectRepository projectRepository)
     {
-        _context = context;
+        _genericRepository = genericRepository;
+        _projectRepository = projectRepository;
     }
+
+    //private readonly TaskFlowDbContext _context;
+
+    //public ProjectService(TaskFlowDbContext context)
+    //{
+    //    _context = context;
+    //}
 
     public async Task<ProjectDto?> GetByIdAsync(Guid id)
     {
-        var project = await _context.Projects
-            .AsNoTracking()
-            .FirstOrDefaultAsync(p => p.Id == id);
+        var project = await GetByIdAsync(id);
 
         if (project is null)
             return null;
@@ -35,16 +40,8 @@ public class ProjectService : IProjectService
 
     public async Task<List<ProjectDto>> GetAllByUserAsync(Guid ownerId)
     {
-        return await _context.Projects
-            .AsNoTracking()
-            .Where(p => p.OwnerId == ownerId)
-            .Select(p => new ProjectDto
-            {
-                Id = p.Id.ToString(),
-                Title = p.Title,
-                Description = p.Description
-            })
-            .ToListAsync();
+        var projects =  await _projectRepository.GetByOwnerAsync(ownerId);
+        
     }
 
     public async Task<Guid> CreateAsync(ProjectCreateDto dto, Guid ownerId)
