@@ -1,5 +1,6 @@
 ﻿using TaskFlow.Application.DTOs.Projects;
 using TaskFlow.Application.Interfaces;
+using TaskFlow.Application.Mappers;
 using TaskFlow.Core.Entities;
 using TaskFlow.Core.Repositories;
 
@@ -40,42 +41,43 @@ public class ProjectService : IProjectService
 
     public async Task<List<ProjectDto>> GetAllByUserAsync(Guid ownerId)
     {
-        var projects =  await _projectRepository.GetByOwnerAsync(ownerId);
-        
+        var projects = await _projectRepository.GetByOwnerAsync(ownerId);
+        return projects
+            .Select(ProjectMapper.MapToDto)!
+            .ToList();
+
     }
 
     public async Task<Guid> CreateAsync(ProjectCreateDto dto, Guid ownerId)
     {
         var project = new Project(dto.Title.Trim(), dto.Description, ownerId);
 
-        _context.Projects.Add(project);
-        await _context.SaveChangesAsync();
+        await _genericRepository.AddAsync(project);
 
         return project.Id;
     }
 
     public async Task<bool> UpdateAsync(Guid projectId, ProjectUpdateDto dto, Guid ownerId)
     {
-        var project = await _context.Projects.FirstOrDefaultAsync(p => p.Id == projectId && p.OwnerId == ownerId);
+        var project = await _genericRepository.GetByIdAsync(projectId);
 
         if (project is null)
             return false;
 
         project.UpdateDetails(dto.Title.Trim(), dto.Description);
 
-        await _context.SaveChangesAsync();
+        await _genericRepository.UpdateAsync(project);
         return true;
     }
 
     public async Task<bool> DeleteAsync(Guid id, Guid ownerId)
     {
-        var project = await _context.Projects.FirstOrDefaultAsync(p => p.Id == id && p.OwnerId == ownerId);
+        var project = await _genericRepository.GetByIdAsync(id);//.FirstOrDefaultAsync(p => p.Id == id && p.OwnerId == ownerId);
 
         if (project is null)
             return false;
 
-        _context.Projects.Remove(project);
-        await _context.SaveChangesAsync();
+        _genericRepository.Remove(project);
 
         return true;
     }
