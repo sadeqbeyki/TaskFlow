@@ -44,6 +44,7 @@ public class GenericRepository<T, TKey> : IGenericRepository<T, TKey> where T : 
     public void Remove(T entity)
     {
         _dbSet.Remove(entity);
+        _context.SaveChanges();
     }
 
     public async Task DeleteAsync(TKey id)

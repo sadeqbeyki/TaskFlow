@@ -17,13 +17,6 @@ public class ProjectService : IProjectService
         _projectRepository = projectRepository;
     }
 
-    //private readonly TaskFlowDbContext _context;
-
-    //public ProjectService(TaskFlowDbContext context)
-    //{
-    //    _context = context;
-    //}
-
     public async Task<ProjectDto?> GetByIdAsync(Guid id)
     {
         var project = await GetByIdAsync(id);
@@ -72,8 +65,7 @@ public class ProjectService : IProjectService
 
     public async Task<bool> DeleteAsync(Guid id, Guid ownerId)
     {
-        var project = await _genericRepository.GetByIdAsync(id);//.FirstOrDefaultAsync(p => p.Id == id && p.OwnerId == ownerId);
-
+        var project = await _genericRepository.GetByIdAsync(id);
         if (project is null)
             return false;
 
