@@ -1,0 +1,42 @@
+﻿@page
+@model TaskFlow.Web.Pages.Projects.IndexModel
+@{
+    ViewData["Title"] = "Projects";
+}
+
+<h1>Projects</h1>
+
+<a asp-page="./Create" class="btn btn-primary mb-3">Create New Project</a>
+
+@if (Model.Projects?.Any() != true)
+{
+    <div class="alert alert-info">No projects found.</div>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Created</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var p in Model.Projects)
+        {
+            <tr>
+                <td>@p.Title</td>
+                <td>@p.Description</td>
+                <td>@p.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd")</td>
+                <td>
+                    <a asp-page="/Projects/Details" asp-route-id="@p.Id" class="btn btn-sm btn-outline-primary">Details</a>
+                    <a asp-page="/Projects/Edit" asp-route-id="@p.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
+                    <a asp-page="/Projects/Delete" asp-route-id="@p.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
