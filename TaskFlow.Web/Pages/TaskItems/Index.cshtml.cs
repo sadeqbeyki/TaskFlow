@@ -1,31 +1,43 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using TaskFlow.Core.Entities;
-using TaskFlow.Infrastructure;
+using System.Security.Claims;
+using TaskFlow.Application.DTOs.TaskItems;
+using TaskFlow.Application.Interfaces;
 
-namespace TaskFlow.Web.Pages.TaskItems
+namespace TaskFlow.Web.Pages.TaskItems;
+
+public class IndexModel : PageModel
 {
-    public class IndexModel : PageModel
+    private readonly ITaskItemService _taskService;
+    private readonly IProjectService _projectService;
+
+    public List<TaskItemDto> Tasks { get; private set; } = new();
+    public string ProjectTitle { get; private set; } = string.Empty;
+
+    public IndexModel(ITaskItemService taskService, IProjectService projectService)
     {
-        private readonly TaskFlowDbContext _context;
+        _taskService = taskService;
+        _projectService = projectService;
+    }
 
+    public async Task<IActionResult> OnGetAsync(Guid projectId)
+    {
+        var ownerId = GetCurrentUserId();
 
-        public IndexModel(TaskFlowDbContext context)
-        {
-            _context = context;
-        }
+        // optional: verify project exists and belongs to user
+        var projectDto = await _projectService.GetByIdAsync(projectId, ownerId);
+        if (projectDto == null) return NotFound();
 
+        ProjectTitle = projectDto.Title;
+        Tasks = await _taskService.GetAllByProjectAsync(projectId, ownerId);
+        return Page();
+    }
 
-        public IList<TaskItem> Tasks { get; set; } = new List<TaskItem>();
-
-
-        public async Task OnGetAsync()
-        {
-            Tasks = await _context.TaskItems
-            .Include(t => t.Project)
-            .OrderByDescending(t => t.CreatedAt)
-            .ToListAsync();
-        }
+    private Guid GetCurrentUserId()
+    {
+        var id = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (!Guid.TryParse(id, out var guid))
+            throw new InvalidOperationException("User not authenticated.");
+        return guid;
     }
 }
