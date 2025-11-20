@@ -16,34 +16,34 @@
 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 <form method="post" class="mt-3">
     <div class="mb-3">
-        <label asp-for="taskItem.Title" class="form-label"></label>
-        <input asp-for="taskItem.Title" class="form-control" />
-        <span asp-validation-for="taskItem.Title" class="text-danger"></span>
+        <label asp-for="taskItemModel.Title" class="form-label"></label>
+        <input asp-for="taskItemModel.Title" class="form-control" />
+        <span asp-validation-for="taskItemModel.Title" class="text-danger"></span>
     </div>
 
 
     <div class="mb-3">
-        <label asp-for="taskItem.Description" class="form-label"></label>
-        <textarea asp-for="taskItem.Description" class="form-control"></textarea>
-        <span asp-validation-for="taskItem.Description" class="text-danger"></span>
+        <label asp-for="taskItemModel.Description" class="form-label"></label>
+        <textarea asp-for="taskItemModel.Description" class="form-control"></textarea>
+        <span asp-validation-for="taskItemModel.Description" class="text-danger"></span>
     </div>
 
 
     <div class="mb-3">
-        <label asp-for="taskItem.Priority" class="form-label"></label>
-        <select asp-for="taskItem.Priority" class="form-select" asp-items="Html.GetEnumSelectList<TaskItemPriority>()"></select>
+        <label asp-for="taskItemModel.Priority" class="form-label"></label>
+        <select asp-for="taskItemModel.Priority" class="form-select" asp-items="Html.GetEnumSelectList<TaskItemPriority>()"></select>
     </div>
 
 
     <div class="mb-3">
-        <label asp-for="taskItem.Status" class="form-label"></label>
-        <select asp-for="taskItem.Status" class="form-select" asp-items="Html.GetEnumSelectList<TaskItemStatus>()"></select>
+        <label asp-for="taskItemModel.Status" class="form-label"></label>
+        <select asp-for="taskItemModel.Status" class="form-select" asp-items="Html.GetEnumSelectList<TaskItemStatus>()"></select>
     </div>
 
 
     <div class="mb-3">
-        <label asp-for="taskItem.DueDate" class="form-label"></label>
-        <input asp-for="taskItem.DueDate" type="date" class="form-control" />
+        <label asp-for="taskItemModel.DueDate" class="form-label"></label>
+        <input asp-for="taskItemModel.DueDate" type="date" class="form-control" />
     </div>
 
 

@@ -1,25 +1,23 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using TaskFlow.Core;
-using TaskFlow.Infrastructure;
+using TaskFlow.Application.DTOs.TaskItems;
+using TaskFlow.Application.Interfaces;
 using TaskFlow.Web.ViewModels;
 
 namespace TaskFlow.Web.Pages.TaskItems
 {
     public class CreateModel : PageModel
     {
-        private readonly TaskFlowDbContext _context;
+        private readonly ITaskItemService _taskItemService;
+        private Guid ownerId;
 
-
-        public CreateModel(TaskFlowDbContext context)
+        public CreateModel(ITaskItemService taskItemService)
         {
-            _context = context;
+            _taskItemService = taskItemService;
         }
 
-
         [BindProperty]
-        public TaskInputModel taskItem { get; set; } = new();
+        public TaskInputModel taskItemModel { get; set; } = new();
 
 
         public IActionResult OnGet()
@@ -35,19 +33,17 @@ namespace TaskFlow.Web.Pages.TaskItems
                 return Page();
             }
 
-            var task = new TaskItem(
-                title: taskItem.Title,
-                description: taskItem.Description,
-                dueDate: taskItem.DueDate,
-                priority: taskItem.Priority,
-                projectId: taskItem.ProjectId
-            );
-
+            var task = new TaskItemCreateDto{
+                Title = taskItemModel.Title,
+                Description = taskItemModel.Description,
+                DueDate = taskItemModel.DueDate,
+                Priority = taskItemModel.Priority,
+                ProjectId = taskItemModel.ProjectId,
+            };
 
             try
             {
-                _context.TaskItems.Add(task);
-                await _context.SaveChangesAsync();
+                await _taskItemService.CreateAsync(task, ownerId);
                 TempData["Message"] = "Task created successfully.";
                 return RedirectToPage("Index");
             }

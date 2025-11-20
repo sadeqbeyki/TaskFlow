@@ -17,19 +17,13 @@ public class ProjectService : IProjectService
         _projectRepository = projectRepository;
     }
 
-    public async Task<ProjectDto?> GetByIdAsync(Guid id)
+    public async Task<ProjectDto?> GetByIdAsync(Guid id, Guid ownerId)
     {
-        var project = await GetByIdAsync(id);
+        var project = await _genericRepository.GetByIdAsync(id);
 
-        if (project is null)
-            return null;
-
-        return new ProjectDto
-        {
-            Id = project.Id.ToString(),
-            Title = project.Title,
-            Description = project.Description
-        };
+        return project is null
+                ? null
+                : ProjectMapper.MapToDto(project);
     }
 
     public async Task<List<ProjectDto>> GetAllByUserAsync(Guid ownerId)
@@ -60,6 +54,7 @@ public class ProjectService : IProjectService
         project.UpdateDetails(dto.Title.Trim(), dto.Description);
 
         await _genericRepository.UpdateAsync(project);
+
         return true;
     }
 

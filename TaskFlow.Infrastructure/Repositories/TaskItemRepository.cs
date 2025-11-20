@@ -85,4 +85,14 @@ public class TaskItemRepository : GenericRepository<TaskItem, Guid>, ITaskItemRe
             .Where(t => t.Status == status)
             .ToListAsync();
     }
+
+    public async Task<bool> ValidateProjectOwnerAsync(Guid projectId, Guid ownerId)
+    {
+        var project = await _context.Projects
+            .FirstOrDefaultAsync(p => p.Id == projectId && p.OwnerId == ownerId) //.AnyAsync(p => p.Id == projectId && p.OwnerId == ownerId);
+            ?? throw new InvalidOperationException("Project not found or you do not have permission.");
+        if (project == null)
+            return false;
+        return true;  
+    }
 }

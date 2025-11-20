@@ -1,4 +1,5 @@
-﻿using TaskFlow.Application.DTOs.TaskItems;
+﻿using System.Threading.Tasks;
+using TaskFlow.Application.DTOs.TaskItems;
 using TaskFlow.Application.Interfaces;
 using TaskFlow.Application.Mappers;
 using TaskFlow.Core.Entities;
@@ -17,22 +18,16 @@ public class TaskItemService : ITaskItemService
         _taskItemRepository = taskItemRepository;
     }
 
-    public async Task<TaskItemDto?> GetByIdAsync(Guid id, Guid ownerId)
+    public async Task<TaskItemDto?> GetByIdAndOwnerAsync(Guid id, Guid ownerId)
     {
-        // Ensure the task exists and belongs to a project owned by ownerId (authorization)
         var task = await _genericRepository.GetByIdAsync(id);
 
-        if (task == null) return null;
-        if (task.Project != null && task.Project.OwnerId != ownerId) return null; // not authorized
-
-        return TaskItemMapper.MapToDto(task);
+        return task is null ? null : TaskItemMapper.MapToDto(task);
     }
 
     public async Task<List<TaskItemDto>> GetAllByProjectAsync(Guid projectId, Guid ownerId)
     {
         var taskList = await _taskItemRepository.GetByProjectAsync(projectId);
-
-        if (taskList == null) return new List<TaskItemDto>();
 
         return taskList
             .Select(TaskItemMapper.MapToDto)
@@ -41,9 +36,11 @@ public class TaskItemService : ITaskItemService
 
     public async Task<Guid> CreateAsync(TaskItemCreateDto dto, Guid ownerId)
     {
-        //// Validate project exists and belongs to owner
-        //var project = await _context.Projects.FirstOrDefaultAsync(p => p.Id == dto.ProjectId && p.OwnerId == ownerId)
-        //    ?? throw new InvalidOperationException("Project not found or you do not have permission.");
+        var projectExists = await _taskItemRepository.ValidateProjectOwnerAsync(dto.ProjectId, ownerId);
+
+        if (!projectExists)
+            throw new UnauthorizedAccessException("Project does not belong to this user.");
+
 
         var task = new TaskItem(
             title: dto.Title.Trim(),
@@ -54,6 +51,7 @@ public class TaskItemService : ITaskItemService
         );
 
         await _genericRepository.AddAsync(task);
+
         return task.Id;
     }
 
@@ -61,12 +59,13 @@ public class TaskItemService : ITaskItemService
     {
         var task = await _genericRepository.GetByIdAsync(id);
 
-        if (task == null) return false;
-        if (task.Project != null && task.Project.OwnerId != ownerId) return false; // not authorized
+        if (task == null)
+            return false;
 
         task.UpdateDetails(dto.Title.Trim(), dto.Description, dto.DueDate, dto.Priority);
 
         await _genericRepository.UpdateAsync(task);
+
         return true;
     }
 
@@ -75,48 +74,24 @@ public class TaskItemService : ITaskItemService
         var task = await _genericRepository.GetByIdAsync(id);
 
         if (task == null) return false;
-        if (task.Project != null && task.Project.OwnerId != ownerId) return false; // not authorized
-
-        _genericRepository.Remove(task);
+        await _genericRepository.DeleteAsync(id);
         return true;
-    }
-
-    public async Task<bool> ChangeStatusAsync(Guid id, TaskItemStatusUpdateDto dto, Guid ownerId)
-    {
-        var task = await _taskItemRepository.ChangeStatusAsync(id, dto.Status, ownerId);
-
-        if (task == true)
-            return true;
-        return false;
     }
 
     // ---------------------------------------------------------
     // Status changes
     // ---------------------------------------------------------
-    public async Task<bool> MarkInProgressAsync(Guid id, Guid ownerId)
-    {
-        var task = await _taskItemRepository.MarkInProgressAsync(id, ownerId);
+    public async Task<bool> ChangeStatusAsync(Guid id, TaskItemStatusUpdateDto dto, Guid ownerId)
+        => await _taskItemRepository.ChangeStatusAsync(id, dto.Status, ownerId);
 
-        if (task == true)
-            return true;
-        return false;
-    }
+    public async Task<bool> MarkInProgressAsync(Guid id, Guid ownerId)
+        => await _taskItemRepository.MarkInProgressAsync(id, ownerId);
 
     public async Task<bool> MarkDoneAsync(Guid id, Guid ownerId)
-    {
-        var task = await _taskItemRepository.MarkDoneAsync(id, ownerId);
+        => await _taskItemRepository.MarkDoneAsync(id, ownerId);
 
-        if (task == true)
-            return true;
-        return false;
-    }
 
     public async Task<bool> ReopenAsync(Guid id, Guid ownerId)
-    {
-        var task = await _taskItemRepository.ReopenAsync(id, ownerId);
+        => await _taskItemRepository.ReopenAsync(id, ownerId);
 
-        if (task == true)
-            return true;
-        return false;
-    }
 }

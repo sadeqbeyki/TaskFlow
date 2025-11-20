@@ -20,6 +20,6 @@ public class TaskInputModel
 
     public TaskItemStatus Status { get; set; } = TaskItemStatus.Todo;
 
-    public Guid? ProjectId { get; set; } // fill or default if you don't use Project yet
+    public Guid ProjectId { get; set; } // fill or default if you don't use Project yet
 }
 

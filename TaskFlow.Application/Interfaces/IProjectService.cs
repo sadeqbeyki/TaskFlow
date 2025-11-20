@@ -4,7 +4,7 @@ namespace TaskFlow.Application.Interfaces;
 
 public interface IProjectService
 {
-    Task<ProjectDto?> GetByIdAsync(Guid id);
+    Task<ProjectDto?> GetByIdAsync(Guid id, Guid ownerId);
     Task<List<ProjectDto>> GetAllByUserAsync(Guid ownerId);
 
     Task<Guid> CreateAsync(ProjectCreateDto dto, Guid ownerId);
