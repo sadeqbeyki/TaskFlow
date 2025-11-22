@@ -12,6 +12,8 @@ public class TaskItemUiProfile:Profile
         CreateMap<TaskItemDto, TaskItemViewModel>().ReverseMap();
 
         CreateMap<TaskItemUpdateDto, TaskItemInputModel>().ReverseMap();
+        CreateMap<TaskItemCreateDto, TaskItemInputModel>().ReverseMap();
+
     }
 
 }
