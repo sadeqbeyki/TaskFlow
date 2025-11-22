@@ -1,32 +1,35 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using TaskFlow.Core.Entities;
-using TaskFlow.Infrastructure;
+using TaskFlow.Application.Services;
+using TaskFlow.Web.Pages.TaskItems.Models;
 
 namespace TaskFlow.Web.Pages.TaskItems
 {
     public class DetailsModel : PageModel
     {
-        private readonly TaskFlowDbContext _context;
+        private readonly TaskItemService _taskItemService;
+        private readonly IMapper _mapper;
 
-
-        public DetailsModel(TaskFlowDbContext context)
+        public DetailsModel(TaskItemService taskItemService, IMapper mapper)
         {
-            _context = context;
+            _taskItemService = taskItemService;
+            _mapper = mapper;
         }
 
-
-        public TaskItem TaskItem { get; set; } = new();
+        [BindProperty(SupportsGet = true)]
+        public Guid Id { get; set; }
+        public TaskItemViewModel? viewModel { get; set; } = new();
 
 
         public async Task<IActionResult> OnGetAsync(Guid id)
         {
-            TaskItem = await _context.TaskItems.Include(t => t.Project).FirstOrDefaultAsync(t => t.Id == id) ?? new TaskItem();
-            if (TaskItem.Id == Guid.Empty)
+            var ownerId = Guid.Parse("11111111-1111-1111-1111-111111111111");
+            var dto = await _taskItemService.GetByIdAndOwnerAsync(id, ownerId);
+            if (dto == null)
                 return NotFound();
 
-
+            viewModel = _mapper.Map<TaskItemViewModel>(dto);
             return Page();
         }
     }

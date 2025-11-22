@@ -1,8 +1,9 @@
-﻿using TaskFlow.Core.Entities;
+﻿using TaskFlow.Application.DTOs.TaskItems;
+using TaskFlow.Core.Entities;
 
-namespace TaskFlow.Application.DTOs.TaskItems;
+namespace TaskFlow.Web.Pages.TaskItems.Models;
 
-public class TaskItemUpdateDto
+public class TaskItemViewModel
 {
     public Guid Id { get; set; }
     public string Title { get; set; } = string.Empty;
@@ -14,4 +15,3 @@ public class TaskItemUpdateDto
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
 }
-

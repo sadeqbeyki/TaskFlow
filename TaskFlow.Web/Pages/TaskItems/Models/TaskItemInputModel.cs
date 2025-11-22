@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using TaskFlow.Core.Entities;
 
-namespace TaskFlow.Web.ViewModels;
+namespace TaskFlow.Web.Pages.TaskItems.Models;
 
 
-public class TaskInputModel
+public class TaskItemInputModel
 {
     [Required(ErrorMessage = "Title is required.")]
     [StringLength(100, ErrorMessage = "Title must not exceed 100 characters.")]
@@ -20,6 +20,5 @@ public class TaskInputModel
 
     public TaskItemStatus Status { get; set; } = TaskItemStatus.Todo;
 
-    public Guid ProjectId { get; set; } // fill or default if you don't use Project yet
+    public Guid? ProjectId { get; set; }
 }
-

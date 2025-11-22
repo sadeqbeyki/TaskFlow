@@ -1,14 +1,19 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using TaskFlow.Application.Interfaces;
+using TaskFlow.Application.Mappers;
 using TaskFlow.Application.Services;
 using TaskFlow.Core.Repositories;
 using TaskFlow.Infrastructure;
 using TaskFlow.Infrastructure.Repositories;
+using TaskFlow.Web.Pages.TaskItems.Mappers;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+
+builder.Services.AddAutoMapper(typeof(TaskItemProfile));
 
 // Register DbContext with connection string
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")

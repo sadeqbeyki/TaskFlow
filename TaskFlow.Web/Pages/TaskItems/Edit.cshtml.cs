@@ -1,81 +1,62 @@
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using TaskFlow.Application.DTOs.TaskItems;
+using TaskFlow.Application.Interfaces;
 using TaskFlow.Core.Entities;
-using TaskFlow.Infrastructure;
-using TaskFlow.Web.ViewModels;
+using TaskFlow.Web.Pages.TaskItems.Models;
 
-namespace TaskFlow.Web.Pages.TaskItems
+namespace TaskFlow.Web.Pages.TaskItems;
+
+public class EditModel : PageModel
 {
-    public class EditModel : PageModel
+    private readonly ITaskItemService _taskItemService;
+    private readonly IMapper _mapper;
+
+    public EditModel(ITaskItemService taskItemService, IMapper mapper)
     {
-        private readonly TaskFlowDbContext _context;
+        _taskItemService = taskItemService;
+        _mapper = mapper;
+    }
+
+    [BindProperty]
+    public TaskItemInputModel inputModel { get; set; } = new();
+
+    [BindProperty(SupportsGet = true)]
+    public Guid Id { get; set; }
+
+    private Guid OwnerId => Guid.Parse("11111111-1111-1111-1111-111111111111"); 
 
 
-        public EditModel(TaskFlowDbContext context)
+    public async Task<IActionResult> OnGetAsync(Guid id)
+    {
+        var taskItem = await _taskItemService.GetByIdAndOwnerAsync(id, OwnerId);
+        if (taskItem == null)
+            return NotFound();
+
+        inputModel = _mapper.Map<TaskItemInputModel>(taskItem);
+        Id = taskItem.Id;
+
+        return Page();
+    }
+
+
+    public async Task<IActionResult> OnPostAsync()
+    {
+        if (!ModelState.IsValid) 
+            return Page();
+
+        var taskItem = _mapper.Map<TaskItemUpdateDto>(inputModel);
+        taskItem.Id = Id;
+        var operation = await _taskItemService.UpdateAsync(Id, taskItem, OwnerId);
+        if (!operation)
         {
-            _context = context;
-        }
-
-
-        [BindProperty]
-        public TaskInputModel taskInputModel { get; set; } = new();
-
-        [BindProperty(SupportsGet = true)]
-        public Guid Id { get; set; }
-
-        public async Task<IActionResult> OnGetAsync(Guid id)
-        {
-            var entity = await _context.TaskItems.FindAsync(id);
-            if (entity == null)
-                return NotFound();
-
-            Id = entity.Id;
-            // Map entity -> input model for showing in form
-            taskInputModel.Title = entity.Title;
-            taskInputModel.Description = entity.Description;
-            taskInputModel.DueDate = entity.DueDate;
-            taskInputModel.Priority = entity.Priority;
-            taskInputModel.Status = entity.Status;
-            taskInputModel.ProjectId = entity.ProjectId;
-
+            ModelState.AddModelError(string.Empty, "Unable to update task.");
             return Page();
         }
 
-
-        public async Task<IActionResult> OnPostAsync()
-        {
-            if (!ModelState.IsValid) return Page();
-
-            var entity = await _context.TaskItems.FindAsync(Id);
-            if (entity == null) return NotFound();
-
-            // Use domain method to update (we defined UpdateDetails earlier)
-            entity.UpdateDetails(taskInputModel.Title, taskInputModel.Description, taskInputModel.DueDate, taskInputModel.Priority);
-
-            // If you allow changing status from UI, call domain methods appropriately:
-            if (taskInputModel.Status == TaskItemStatus.InProgress && entity.Status != TaskItemStatus.InProgress)
-                entity.MarkInProgress();
-            else if (taskInputModel.Status == TaskItemStatus.Done && entity.Status != TaskItemStatus.Done)
-                entity.MarkDone();
-            // (else leave as is)
-
-            try
-            {
-                await _context.SaveChangesAsync();
-                TempData["Message"] = "Task updated successfully.";
-                return RedirectToPage("Index");
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                ModelState.AddModelError(string.Empty, "Concurrency issue occurred while updating.");
-                return Page();
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, $"An error occurred: {ex.Message}");
-                return Page();
-            }
-        }
+        TempData["Message"] = "Task updated successfully.";
+        return RedirectToPage("Index");
     }
 }
