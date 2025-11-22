@@ -1,57 +1,49 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using TaskFlow.Core.Entities;
-using TaskFlow.Infrastructure;
+using TaskFlow.Application.Interfaces;
+using TaskFlow.Web.Pages.TaskItems.Models;
 
-namespace TaskFlow.Web.Pages.TaskItems
+namespace TaskFlow.Web.Pages.TaskItems;
+
+public class DeleteModel : PageModel
 {
-    public class DeleteModel : PageModel
+    private readonly ITaskItemService _taskItemService;
+    private readonly IMapper _mapper;
+
+    public DeleteModel(ITaskItemService taskItemService, IMapper mapper)
     {
-        private readonly TaskFlowDbContext _context;
+        _taskItemService = taskItemService;
+        _mapper = mapper;
+    }
+
+    [BindProperty]
+    public TaskItemViewModel viewModel { get; set; } = new();
+    private readonly Guid _fakeOwnerId = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee");
+
+    public async Task<IActionResult> OnGetAsync(Guid id)
+    {
+        var dto = await _taskItemService.GetByIdAndOwnerAsync(id, _fakeOwnerId);
+        if (dto == null)
+            return NotFound();
+
+        viewModel = _mapper.Map<TaskItemViewModel>(dto);
+        return Page();
+    }
 
 
-        public DeleteModel(TaskFlowDbContext context)
+    public async Task<IActionResult> OnPostAsync(Guid id)
+    {
+        try
         {
-            _context = context;
+            await _taskItemService.DeleteAsync(id, _fakeOwnerId);
+            TempData["Message"] = "Task deleted successfully.";
+            return RedirectToPage("Index");
         }
-
-
-        [BindProperty]
-        public TaskItem TaskItem { get; set; } = new();
-
-
-        public async Task<IActionResult> OnGetAsync(Guid id)
+        catch (Exception ex)
         {
-            TaskItem = await _context.TaskItems.FindAsync(id) ?? new TaskItem();
-            if (TaskItem.Id == Guid.Empty)
-                return NotFound();
-
-
+            ModelState.AddModelError(string.Empty, $"An error has occurred.: {ex.Message}");
             return Page();
-        }
-
-
-        public async Task<IActionResult> OnPostAsync(Guid id)
-        {
-            try
-            {
-
-
-                var task = await _context.TaskItems.FindAsync(id);
-                if (task != null)
-                {
-                    _context.TaskItems.Remove(task);
-                    await _context.SaveChangesAsync();
-                }
-
-
-                return RedirectToPage("Index");
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, $"An error has occurred.: {ex.Message}");
-                return Page();
-            }
         }
     }
 }

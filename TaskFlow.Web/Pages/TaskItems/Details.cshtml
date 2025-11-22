@@ -7,14 +7,14 @@
 <h2>Task Details</h2>
 <div class="card">
 <div class="card-body">
-<h5>@Model.TaskItem.Title</h5>
-<p>@Model.TaskItem.Description</p>
+<h5>@Model.viewModel.Title</h5>
+<p>@Model.viewModel.Description</p>
 <ul>
-<li>Priority: @Model.TaskItem.Priority</li>
-<li>Status: @Model.TaskItem.Status</li>
-<li>Due Date: @Model.TaskItem.DueDate?.ToShortDateString()</li>
+<li>Priority: @Model.viewModel.Priority</li>
+<li>Status: @Model.viewModel.Status</li>
+<li>Due Date: @Model.viewModel.DueDate?.ToShortDateString()</li>
 </ul>
-<a asp-page="Edit" asp-route-id="@Model.TaskItem.Id" class="btn btn-primary">Edit</a>
+<a asp-page="Edit" asp-route-id="@Model.viewModel.Id" class="btn btn-primary">Edit</a>
 <a asp-page="Index" class="btn btn-secondary">Back</a>
 </div>
 </div>

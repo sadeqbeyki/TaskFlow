@@ -17,14 +17,14 @@ public class CreateModel : PageModel
 
     [BindProperty]
     public ProjectCreateDto Input { get; set; } = new();
-
+    private readonly Guid _fakeOwnerId = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee");
     public void OnGet() { }
 
     public async Task<IActionResult> OnPostAsync()
     {
         if (!ModelState.IsValid) return Page();
 
-        var ownerId = GetCurrentUserId();
+        var ownerId = _fakeOwnerId;
 
         var newId = await _projectService.CreateAsync(Input, ownerId);
         TempData["Message"] = "Project created successfully.";

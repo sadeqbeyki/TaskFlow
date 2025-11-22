@@ -9,7 +9,7 @@ public class IndexModel : PageModel
 {
     private readonly IProjectService _projectService;
     public List<ProjectDto> Projects { get; private set; } = new();
-
+    private readonly Guid _fakeOwnerId = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee");
     public IndexModel(IProjectService projectService)
     {
         _projectService = projectService;
@@ -17,7 +17,7 @@ public class IndexModel : PageModel
 
     public async Task OnGetAsync()
     {
-        var ownerId = GetCurrentUserId();
+        var ownerId = _fakeOwnerId;
         Projects = await _projectService.GetAllByUserAsync(ownerId);
     }
 
