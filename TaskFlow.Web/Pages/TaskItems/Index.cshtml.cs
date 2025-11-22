@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Security.Claims;
 using TaskFlow.Application.DTOs.TaskItems;
 using TaskFlow.Application.Interfaces;
 
@@ -12,7 +11,9 @@ public class IndexModel : PageModel
     private readonly IProjectService _projectService;
 
     public List<TaskItemDto> Tasks { get; private set; } = new();
+
     public string ProjectTitle { get; private set; } = string.Empty;
+
 
     public IndexModel(ITaskItemService taskService, IProjectService projectService)
     {
@@ -22,22 +23,12 @@ public class IndexModel : PageModel
 
     public async Task<IActionResult> OnGetAsync(Guid projectId)
     {
-        var ownerId = GetCurrentUserId();
+        var ownerId = Guid.Parse("11111111-1111-1111-1111-111111111111");
 
-        // optional: verify project exists and belongs to user
-        var projectDto = await _projectService.GetByIdAsync(projectId, ownerId);
-        if (projectDto == null) return NotFound();
-
-        ProjectTitle = projectDto.Title;
         Tasks = await _taskService.GetAllByProjectAsync(projectId, ownerId);
+        if (Tasks == null) 
+            return NotFound();
         return Page();
     }
 
-    private Guid GetCurrentUserId()
-    {
-        var id = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (!Guid.TryParse(id, out var guid))
-            throw new InvalidOperationException("User not authenticated.");
-        return guid;
-    }
 }

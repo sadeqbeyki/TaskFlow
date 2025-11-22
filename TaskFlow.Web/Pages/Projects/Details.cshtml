@@ -1,0 +1,36 @@
+﻿@page "{id:guid}"
+@model TaskFlow.Web.Pages.Projects.DetailsModel
+
+@using TaskFlow.Base.Extensions
+
+<h2>Project Details</h2>
+
+<div class="card">
+    <div class="card-body">
+
+        <h4 class="mb-3">@Model.Project?.Title</h4>
+
+        <p>
+            <strong>Description:</strong><br />
+            @Model.Project?.Description
+        </p>
+
+        <p>
+            <strong>Created At:</strong>
+            @Model.Project?.CreatedAt.ToString("yyyy-MM-dd HH:mm")
+        </p>
+
+        <p>
+            <strong>Last Updated:</strong>
+            @* @(Model.Project?.UpdatedAt?.ToString("yyyy-MM-dd HH:mm") ?? "-") *@
+            @(Model.Project?.UpdatedAt.ToReadable())
+
+        </p>
+
+        <div class="mt-4">
+            <a asp-page="Edit" asp-route-id="@Model.Project?.Id" class="btn btn-primary">Edit</a>
+            <a asp-page="Index" class="btn btn-secondary">Back</a>
+        </div>
+
+    </div>
+</div>
