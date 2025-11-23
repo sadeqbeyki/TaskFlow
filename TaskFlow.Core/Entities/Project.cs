@@ -33,11 +33,12 @@ public class Project
     [StringLength(500, ErrorMessage = "Description must not exceed 500 characters.")]
     public string? Description { get; private set; }
 
-    public Guid OwnerId { get; private set; }
 
     [DataType(DataType.Date)]
     public DateTime CreatedAt { get; private set; }
     public DateTime? UpdatedAt { get; private set; }
+
+    public Guid? OwnerId { get; private set; }
 
     // Navigation
     public User? Owner { get; private set; }
