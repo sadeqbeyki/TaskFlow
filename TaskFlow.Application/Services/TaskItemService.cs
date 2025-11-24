@@ -1,5 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using AutoMapper;
+using System.Threading.Tasks;
 using TaskFlow.Application.DTOs.TaskItems;
+using TaskFlow.Application.Filters;
 using TaskFlow.Application.Interfaces;
 using TaskFlow.Application.Mappers;
 using TaskFlow.Core.Entities;
@@ -11,11 +13,13 @@ public class TaskItemService : ITaskItemService
 {
     private readonly IGenericRepository<TaskItem, Guid> _genericRepository;
     private readonly ITaskItemRepository _taskItemRepository;
+    private readonly IMapper _mapper;
 
-    public TaskItemService(IGenericRepository<TaskItem, Guid> genericRepository, ITaskItemRepository taskItemRepository)
+    public TaskItemService(IGenericRepository<TaskItem, Guid> genericRepository, ITaskItemRepository taskItemRepository, IMapper mapper)
     {
         _genericRepository = genericRepository;
         _taskItemRepository = taskItemRepository;
+        _mapper = mapper;
     }
 
     public async Task<TaskItemDto?> GetByIdAndOwnerAsync(Guid id, Guid ownerId)
@@ -93,5 +97,15 @@ public class TaskItemService : ITaskItemService
 
     public async Task<bool> ReopenAsync(Guid id, Guid ownerId)
         => await _taskItemRepository.ReopenAsync(id, ownerId);
+
+    // ---------------------------------------------------------
+    // Filters
+    // ---------------------------------------------------------
+    public async Task<IReadOnlyList<TaskItemDto>> GetFilteredAsync(TaskItemFilter filter)
+    {
+        var items = await _taskItemRepository.GetFilteredAsync(filter);
+        return _mapper.Map<IReadOnlyList<TaskItemDto>>(items);
+    }
+
 
 }

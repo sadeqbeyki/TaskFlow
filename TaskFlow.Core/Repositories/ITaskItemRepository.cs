@@ -1,4 +1,5 @@
-﻿using TaskFlow.Core.Entities;
+﻿using TaskFlow.Application.Filters;
+using TaskFlow.Core.Entities;
 
 namespace TaskFlow.Core.Repositories
 {
@@ -8,7 +9,7 @@ namespace TaskFlow.Core.Repositories
         Task<List<TaskItem>> GetByProjectAsync(Guid projectId);
 
         Task<List<TaskItem>> GetByStatusAsync(TaskItemStatus status);
-
+        Task<IReadOnlyList<TaskItem>> GetFilteredAsync(TaskItemFilter filter);
         Task<bool> MarkDoneAsync(Guid id, Guid ownerId);
         Task<bool> MarkInProgressAsync(Guid id, Guid ownerId);
         Task<bool> ReopenAsync(Guid id, Guid ownerId);
