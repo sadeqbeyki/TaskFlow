@@ -1,11 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.CodeAnalysis;
 using TaskFlow.Application.DTOs.TaskItems;
 using TaskFlow.Application.Filters;
 using TaskFlow.Application.Interfaces;
-using TaskFlow.Application.Services;
-using TaskFlow.Core.Entities;
 
 namespace TaskFlow.Web.Pages.TaskItems;
 
@@ -14,7 +11,7 @@ public class IndexModel : PageModel
     private readonly ITaskItemService _taskItemService;
     private readonly IProjectService _projectService;
 
-    public List<TaskItemDto> TaskItems { get; private set; } = new();
+    public IReadOnlyList<TaskItemDto> TaskItems { get; private set; } = [];
 
     public string ProjectTitle { get; private set; } = string.Empty;
 
@@ -34,28 +31,9 @@ public class IndexModel : PageModel
     //        return NotFound();
     //    return Page();
     //}
-    public async Task OnGetAsync()
-    {
-        var filter = new TaskItemFilter
-        {
-            SearchText = Search,
-            Status = Status,
-            Priority = Priority,
-            ProjectId = ProjectId
-        };
 
+    public async Task OnGetAsync([FromQuery] TaskItemFilter filter)
+    {
         TaskItems = await _taskItemService.GetFilteredAsync(filter);
     }
-
-    [BindProperty(SupportsGet = true)]
-    public string? Search { get; set; }
-
-    [BindProperty(SupportsGet = true)]
-    public TaskItemStatus? Status { get; set; }
-
-    [BindProperty(SupportsGet = true)]
-    public TaskItemPriority? Priority { get; set; }
-
-    [BindProperty(SupportsGet = true)]
-    public Guid? ProjectId { get; set; }
 }

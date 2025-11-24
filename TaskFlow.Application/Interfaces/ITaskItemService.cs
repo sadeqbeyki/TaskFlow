@@ -17,5 +17,6 @@ public interface ITaskItemService
     Task<bool> MarkInProgressAsync(Guid id, Guid ownerId);
     Task<bool> MarkDoneAsync(Guid id, Guid ownerId);
     Task<bool> ReopenAsync(Guid id, Guid ownerId);
+
     Task<IReadOnlyList<TaskItemDto>> GetFilteredAsync(TaskItemFilter filter);
 }

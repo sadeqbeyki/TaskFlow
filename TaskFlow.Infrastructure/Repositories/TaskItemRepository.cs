@@ -97,24 +97,4 @@ public class TaskItemRepository : GenericRepository<TaskItem, Guid>, ITaskItemRe
         return true;  
     }
 
-    public async Task<IReadOnlyList<TaskItem>> GetFilteredAsync(TaskItemFilter filter)
-    {
-        var query = _context.TaskItems.AsQueryable();
-
-        if (!string.IsNullOrWhiteSpace(filter.SearchText))
-            query = query.Where(x => x.Title.Contains(filter.SearchText) ||
-                                     x.Description!.Contains(filter.SearchText));
-
-        if (filter.Status != null)
-            query = query.Where(x => x.Status == filter.Status);
-
-        if (filter.Priority != null)
-            query = query.Where(x => x.Priority == filter.Priority);
-
-        if (filter.ProjectId != null)
-            query = query.Where(x => x.ProjectId == filter.ProjectId);
-
-        return await query.ToListAsync();
-    }
-
 }

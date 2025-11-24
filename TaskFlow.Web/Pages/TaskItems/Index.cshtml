@@ -42,31 +42,3 @@ else
     </table>
 }
 
-
-
-<form method="get" class="mb-3">
-
-    <input type="text" name="Search" value="@Model.Search" placeholder="Search..." class="form-control" />
-
-    <select name="Status" class="form-select mt-2">
-        <option value="">-- Status --</option>
-        @foreach (var s in Enum.GetValues(typeof(TaskItemStatus)))
-        {
-            <option value="@s" selected="@(Model.Status == (TaskItemStatus)s)">
-                @s
-            </option>
-        }
-    </select>
-
-    <select name="Priority" class="form-select mt-2">
-        <option value="">-- Priority --</option>
-        @foreach (var p in Enum.GetValues(typeof(TaskItemPriority)))
-        {
-            <option value="@p" selected="@(Model.Priority == (TaskItemPriority)p)">
-                @p
-            </option>
-        }
-    </select>
-
-    <button type="submit" class="btn btn-primary mt-3">Filter</button>
-</form>

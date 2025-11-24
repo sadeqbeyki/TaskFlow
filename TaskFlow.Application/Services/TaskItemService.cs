@@ -4,6 +4,7 @@ using TaskFlow.Application.DTOs.TaskItems;
 using TaskFlow.Application.Filters;
 using TaskFlow.Application.Interfaces;
 using TaskFlow.Application.Mappers;
+using TaskFlow.Application.Specifications;
 using TaskFlow.Core.Entities;
 using TaskFlow.Core.Repositories;
 
@@ -103,8 +104,9 @@ public class TaskItemService : ITaskItemService
     // ---------------------------------------------------------
     public async Task<IReadOnlyList<TaskItemDto>> GetFilteredAsync(TaskItemFilter filter)
     {
-        var items = await _taskItemRepository.GetFilteredAsync(filter);
-        return _mapper.Map<IReadOnlyList<TaskItemDto>>(items);
+        var spec = new TaskItemSpecification(filter);
+        var result = await _genericRepository.ListAsync(spec);
+        return _mapper.Map<IReadOnlyList<TaskItemDto>>(result);
     }
 
 
