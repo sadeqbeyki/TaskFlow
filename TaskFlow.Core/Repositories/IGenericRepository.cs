@@ -1,5 +1,4 @@
-﻿using TaskFlow.Core.Specifications;
-
+﻿
 namespace TaskFlow.Core.Repositories;
 
 public interface IGenericRepository<T, TKey> where T : class
@@ -11,8 +10,4 @@ public interface IGenericRepository<T, TKey> where T : class
     Task UpdateAsync(T entity); 
     void Remove(T entity);
     Task DeleteAsync(TKey id);
-    Task<IReadOnlyList<T>> ListAsync(ISpecification<T>? spec = null);
-
-
-
 }

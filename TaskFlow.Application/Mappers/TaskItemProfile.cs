@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using TaskFlow.Application.DTOs.TaskItems;
-using TaskFlow.Application.Filters;
 using TaskFlow.Core.Entities;
+using TaskFlow.Core.Filters;
 
 namespace TaskFlow.Application.Mappers;
 

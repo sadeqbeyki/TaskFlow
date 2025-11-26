@@ -8,14 +8,13 @@ public static class ExpressionExtensions
         this Expression<Func<T, bool>> left,
         Expression<Func<T, bool>> right)
     {
-        if (left == null) return right;
+        if (left == null) return right ?? (t => true);
+        if (right == null) return left;
 
         var param = Expression.Parameter(typeof(T));
-
-        var body = Expression.AndAlso(
-            Expression.Invoke(left, param),
-            Expression.Invoke(right, param));
-
+        var leftInvoked = Expression.Invoke(left, param);
+        var rightInvoked = Expression.Invoke(right, param);
+        var body = Expression.AndAlso(leftInvoked, rightInvoked);
         return Expression.Lambda<Func<T, bool>>(body, param);
     }
 }

@@ -58,23 +58,4 @@ public class GenericRepository<T, TKey> : IGenericRepository<T, TKey> where T : 
         await _context.SaveChangesAsync();
     }
 
-    public async Task<IReadOnlyList<T>> ListAsync(ISpecification<T>? spec = null)
-    {
-        IQueryable<T> query = _context.Set<T>().AsQueryable();
-
-        if (spec?.Criteria != null)
-            query = query.Where(spec.Criteria);
-
-        if (spec?.OrderBy != null)
-            query = spec.OrderBy(query);
-
-        if (spec?.Skip != null)
-            query = query.Skip(spec.Skip.Value);
-
-        if (spec?.Take != null)
-            query = query.Take(spec.Take.Value);
-
-        return await query.ToListAsync();
-    }
-
 }

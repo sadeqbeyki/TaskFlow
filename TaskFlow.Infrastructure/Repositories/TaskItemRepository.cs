@@ -1,7 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TaskFlow.Application.Filters;
+using TaskFlow.Application.DTOs.TaskItems;
+using TaskFlow.Application.Specifications;
 using TaskFlow.Core.Entities;
+using TaskFlow.Core.Filters;
 using TaskFlow.Core.Repositories;
+using TaskFlow.Core.Specifications;
 
 namespace TaskFlow.Infrastructure.Repositories;
 
@@ -94,7 +97,48 @@ public class TaskItemRepository : GenericRepository<TaskItem, Guid>, ITaskItemRe
             ?? throw new InvalidOperationException("Project not found or you do not have permission.");
         if (project == null)
             return false;
-        return true;  
+        return true;
+    }
+
+
+    public async Task<List<TaskItem>> ListAsync(ISpecification<TaskItem> spec, CancellationToken cancellationToken = default)
+    {
+        var query = ApplySpecification(_context.TaskItems.AsQueryable(), spec);
+        return await query.ToListAsync(cancellationToken);
+    }
+
+    public async Task<int> CountAsync(ISpecification<TaskItem> spec, CancellationToken cancellationToken = default)
+    {
+        var query = ApplySpecification(_context.TaskItems.AsQueryable(), spec, ignorePaging: true);
+        return await query.CountAsync(cancellationToken);
+    }
+
+    private IQueryable<TaskItem> ApplySpecification(IQueryable<TaskItem> query, ISpecification<TaskItem> spec, bool ignorePaging = false)
+    {
+        // Criteria
+        if (spec.Criteria != null)
+            query = query.Where(spec.Criteria);
+
+        // Includes
+        foreach (var include in spec.Includes)
+            query = query.Include(include);
+
+        // Sorting
+        if (spec.OrderBy != null)
+            query = spec.OrderBy(query);
+        else if (spec.OrderByDescending != null)
+            query = spec.OrderByDescending(query);
+
+        // Paging
+        if (!ignorePaging)
+        {
+            if (spec.Skip.HasValue)
+                query = query.Skip(spec.Skip.Value);
+            if (spec.Take.HasValue)
+                query = query.Take(spec.Take.Value);
+        }
+
+        return query;
     }
 
 }

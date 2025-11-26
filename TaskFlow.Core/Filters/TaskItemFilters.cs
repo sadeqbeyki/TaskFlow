@@ -1,22 +1,35 @@
 ﻿using TaskFlow.Core.Entities;
 
-namespace TaskFlow.Application.Filters;
+namespace TaskFlow.Core.Filters;
 
-
-
-public sealed class TaskItemFilter
+public class TaskItemFilter
 {
-    public string? Search { get; set; }
-    //public bool? IsDone { get; set; }
+    // جستجو
+    public string? SearchText { get; set; }
+    public bool SearchInDescription { get; set; } = false;
+
+    // فیلترهای انتخابی
+    public TaskItemPriority? Priority { get; set; }
+    public TaskItemStatus? Status { get; set; }
+    public Guid? ProjectId { get; set; }
+
+    // بازه‌های تاریخی
+    public DateTime? DueDateFrom { get; set; }
+    public DateTime? DueDateTo { get; set; }
     public DateTime? CreatedFrom { get; set; }
     public DateTime? CreatedTo { get; set; }
-    public DateTime? DueFrom { get; set; }
-    public DateTime? DueTo { get; set; }
-    public string? OrderBy { get; set; }
-    public bool Desc { get; set; }
-    public int Page { get; set; } = 1;
+
+    // paging
+    public int PageNumber { get; set; } = 1;
     public int PageSize { get; set; } = 20;
+
+    // sorting
+    public string? SortBy { get; set; }
+    public bool SortDescending { get; set; } = false;
+
 }
+
+
 
 
 

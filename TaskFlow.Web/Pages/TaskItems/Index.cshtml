@@ -1,10 +1,9 @@
-﻿@page
+﻿@* @page
 @model TaskFlow.Web.Pages.TaskItems.IndexModel
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 <h2>Tasks for @Model.ProjectTitle</h2>
 
-<a asp-page="/Tasks/Create" asp-route-projectId="@Request.Query["projectId"]" class="btn btn-primary mb-3">Create Task</a>
 
 @if (!Model.TaskItems.Any())
 {
@@ -42,3 +41,85 @@ else
     </table>
 }
 
+ *@
+
+@page
+@using TaskFlow.Core.Entities
+@model TaskFlow.Web.Pages.TaskItems.IndexModel
+@{
+    ViewData["Title"] = "Task List";
+}
+
+<h1>Task List</h1>
+
+<a asp-page="/Tasks/Create" asp-route-projectId="@Request.Query["projectId"]" class="btn btn-primary mb-3">Create Task</a>
+
+<form method="get" class="mb-3">
+    <input type="text" name="SearchText" value="@Model.Filter.SearchText" placeholder="Search..." class="form-control mb-2" />
+
+    <select name="Status" class="form-control mb-2">
+        <option value="">All Status</option>
+        @foreach (var status in Enum.GetValues(typeof(TaskItemStatus)))
+        {
+            var isSelected = Model.Filter.Status == (TaskItemStatus?)status;
+            <option value="@status" selected="@(isSelected ? "selected" : null)">@status</option>
+        }
+    </select>
+
+    <select name="Priority" class="form-control mb-2">
+        <option value="">All Priority</option>
+        @foreach (var p in Enum.GetValues(typeof(TaskItemPriority)))
+        {
+            var isSelected = Model.Filter.Priority == (TaskFlow.Core.Entities.TaskItemPriority?)p;
+            <option value="@p" selected="@(isSelected ? "selected" : null)">@p</option>
+        }
+    </select>
+
+    <button type="submit" class="btn btn-primary">Filter</button>
+</form>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th><a asp-page="./Index" asp-route-SortBy="Title" asp-route-SortDescending="@(Model.Filter.SortBy == "Title" ? !Model.Filter.SortDescending : false)">Title</a></th>
+            <th>Description</th>
+            <th><a asp-page="./Index" asp-route-SortBy="Priority" asp-route-SortDescending="@(Model.Filter.SortBy == "Priority" ? !Model.Filter.SortDescending : false)">Priority</a></th>
+            <th><a asp-page="./Index" asp-route-SortBy="Status" asp-route-SortDescending="@(Model.Filter.SortBy == "Status" ? !Model.Filter.SortDescending : false)">Status</a></th>
+            <th><a asp-page="./Index" asp-route-SortBy="DueDate" asp-route-SortDescending="@(Model.Filter.SortBy == "DueDate" ? !Model.Filter.SortDescending : false)">Due Date</a></th>
+            <th>Created At</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var task in Model.TaskItems)
+        {
+            <tr>
+                <td>@task.Title</td>
+                <td>@task.Description</td>
+                <td>@task.Priority</td>
+                <td>@task.Status</td>
+                <td>@task.DueDate?.ToString("yyyy-MM-dd")</td>
+                <td>@task.CreatedAt.ToString("yyyy-MM-dd")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<nav>
+    <ul class="pagination">
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            <li class="page-item @(Model.Filter.PageNumber == i ? "active" : "")">
+                <a class="page-link" asp-page="./Index"
+                   asp-route-PageNumber="@i"
+                   asp-route-PageSize="@Model.Filter.PageSize"
+                   asp-route-SearchText="@Model.Filter.SearchText"
+                   asp-route-Priority="@Model.Filter.Priority"
+                   asp-route-Status="@Model.Filter.Status"
+                   asp-route-SortBy="@Model.Filter.SortBy"
+                   asp-route-SortDescending="@Model.Filter.SortDescending">
+                   @i
+                </a>
+            </li>
+        }
+    </ul>
+</nav>

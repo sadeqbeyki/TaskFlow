@@ -1,11 +1,10 @@
 ﻿using AutoMapper;
-using System.Threading.Tasks;
 using TaskFlow.Application.DTOs.TaskItems;
-using TaskFlow.Application.Filters;
 using TaskFlow.Application.Interfaces;
 using TaskFlow.Application.Mappers;
 using TaskFlow.Application.Specifications;
 using TaskFlow.Core.Entities;
+using TaskFlow.Core.Filters;
 using TaskFlow.Core.Repositories;
 
 namespace TaskFlow.Application.Services;
@@ -102,12 +101,26 @@ public class TaskItemService : ITaskItemService
     // ---------------------------------------------------------
     // Filters
     // ---------------------------------------------------------
-    public async Task<IReadOnlyList<TaskItemDto>> GetFilteredAsync(TaskItemFilter filter)
+    public async Task<(IReadOnlyList<TaskItemDto> Items, int TotalCount)> GetFilteredItemsAsync(TaskItemFilter filter)
     {
         var spec = new TaskItemSpecification(filter);
-        var result = await _genericRepository.ListAsync(spec);
-        return _mapper.Map<IReadOnlyList<TaskItemDto>>(result);
+
+        var items = await _taskItemRepository.ListAsync(spec);
+        var totalCount = await _taskItemRepository.CountAsync(spec);
+
+        var dtos = items.Select(t => new TaskItemDto
+        {
+            Id = t.Id,
+            Title = t.Title,
+            Description = t.Description,
+            DueDate = t.DueDate,
+            Priority = t.Priority,
+            Status = t.Status,
+            ProjectId = t.ProjectId,
+            CreatedAt = t.CreatedAt,
+            UpdatedAt = t.UpdatedAt
+        }).ToList();
+
+        return (dtos, totalCount);
     }
-
-
 }
