@@ -1,51 +1,8 @@
-﻿@* @page
+﻿@page
+@using TaskFlow.Core.Entities
 @model TaskFlow.Web.Pages.TaskItems.IndexModel
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
-<h2>Tasks for @Model.ProjectTitle</h2>
-
-
-@if (!Model.TaskItems.Any())
-{
-    <div class="alert alert-info">No tasks yet.</div>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Priority</th>
-                <th>Status</th>
-                <th>Due</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var t in Model.TaskItems)
-            {
-                <tr>
-                    <td>@t.Title</td>
-                    <td>@t.Priority</td>
-                    <td>@t.Status</td>
-                    <td>@(t.DueDate?.ToLocalTime().ToString("yyyy-MM-dd") ?? "-")</td>
-                    <td>
-                        <a asp-page="/Tasks/Edit" asp-route-id="@t.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
-                        <form method="post" asp-page-handler="Delete" asp-route-id="@t.Id" class="d-inline">
-                            <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-
- *@
-
-@page
-@using TaskFlow.Core.Entities
-@model TaskFlow.Web.Pages.TaskItems.IndexModel
 @{
     ViewData["Title"] = "Task List";
 }
@@ -56,6 +13,11 @@ else
 
 <form method="get" class="mb-3">
     <input type="text" name="SearchText" value="@Model.Filter.SearchText" placeholder="Search..." class="form-control mb-2" />
+
+    <div class="form-check mb-2">
+        <input class="form-check-input" type="checkbox" name="SearchInDescription" value="true" @(Model.Filter.SearchInDescription ? "checked" : "") />
+        <label class="form-check-label">Search in Description</label>
+    </div>
 
     <select name="Status" class="form-control mb-2">
         <option value="">All Status</option>
@@ -87,6 +49,12 @@ else
             <th><a asp-page="./Index" asp-route-SortBy="Status" asp-route-SortDescending="@(Model.Filter.SortBy == "Status" ? !Model.Filter.SortDescending : false)">Status</a></th>
             <th><a asp-page="./Index" asp-route-SortBy="DueDate" asp-route-SortDescending="@(Model.Filter.SortBy == "DueDate" ? !Model.Filter.SortDescending : false)">Due Date</a></th>
             <th>Created At</th>
+@*             <td>
+                <a asp-page="/Tasks/Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
+                <form method="post" asp-page-handler="Delete" asp-route-id="@t.Id" class="d-inline">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                </form>
+            </td> *@
         </tr>
     </thead>
     <tbody>
