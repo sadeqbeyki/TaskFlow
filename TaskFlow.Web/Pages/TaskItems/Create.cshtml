@@ -9,7 +9,7 @@
 
     <div class="mb-3">
         <label asp-for="inputModel.Title" class="form-label"></label>
-        <taskItemModel asp-for="taskItemModel.Title" class="form-control" />
+        <input asp-for="inputModel.Title" class="form-control" />
         <span asp-validation-for="inputModel.Title" class="text-danger"></span>
     </div>
 
@@ -26,7 +26,7 @@
 
     <div class="mb-3">
         <label asp-for="inputModel.DueDate" class="form-label"></label>
-        <taskItemModel asp-for="taskItemModel.DueDate" type="date" class="form-control" />
+        <input asp-for="inputModel.DueDate" type="date" class="form-control" />
     </div>
 
     <div class="mb-3">

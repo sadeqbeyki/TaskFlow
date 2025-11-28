@@ -29,6 +29,7 @@ namespace TaskFlow.Web.Pages.TaskItems
 
         [BindProperty(SupportsGet = true)]
         public Guid Id { get; set; }
+
         private readonly Guid _fakeOwnerId = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee");
 
         public async Task<IActionResult> OnGetAsync(Guid? projectId)
@@ -55,8 +56,10 @@ namespace TaskFlow.Web.Pages.TaskItems
             {
                 var id = await _taskItemService.CreateAsync(taskItem, ownerId);
                 TempData["Message"] = "Task created successfully.";
-                return RedirectToPage("Details", new { Id = id });
-                //return RedirectToPage("/Tasks/Index", new { projectId = inputModel.ProjectId });
+                return RedirectToPage("/TaskItems/Index");
+
+                //return RedirectToPage("/TaskItems/Details", new { Id = id });
+                //return RedirectToPage("/TaskItems/Index", new { projectId = inputModel.ProjectId });
             }
             catch (UnauthorizedAccessException)
             {

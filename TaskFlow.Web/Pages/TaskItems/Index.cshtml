@@ -9,7 +9,7 @@
 
 <h1>Task List</h1>
 
-<a asp-page="/Tasks/Create" asp-route-projectId="@Request.Query["projectId"]" class="btn btn-primary mb-3">Create Task</a>
+<a asp-page="/TaskItems/Create" asp-route-projectId="@Request.Query["projectId"]" class="btn btn-primary mb-3">Create Task</a>
 
 <form method="get" class="mb-3">
     <input type="text" name="SearchText" value="@Model.Filter.SearchText" placeholder="Search..." class="form-control mb-2" />
