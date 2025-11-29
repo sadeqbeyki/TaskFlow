@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 using TaskFlow.Application.DTOs.TaskItems;
 using TaskFlow.Application.Specifications;
 using TaskFlow.Core.Entities;
@@ -100,12 +101,14 @@ public class TaskItemRepository : GenericRepository<TaskItem, Guid>, ITaskItemRe
         return true;
     }
 
-
-    public async Task<List<TaskItem>> ListAsync(ISpecification<TaskItem> spec, CancellationToken cancellationToken = default)
+    // Begin Filter
+    // Begin_InBigDB
+    public async Task<List<TResult>> ListAsync<TResult>(ISpecification<TaskItem> spec, Expression<Func<TaskItem, TResult>> selector, CancellationToken cancellationToken = default)
     {
         var query = ApplySpecification(_context.TaskItems.AsQueryable(), spec);
-        return await query.ToListAsync(cancellationToken);
+        return await query.Select(selector).ToListAsync(cancellationToken);
     }
+    // End_InBigDB
 
     public async Task<int> CountAsync(ISpecification<TaskItem> spec, CancellationToken cancellationToken = default)
     {
@@ -141,4 +144,5 @@ public class TaskItemRepository : GenericRepository<TaskItem, Guid>, ITaskItemRe
         return query;
     }
 
+    // End Filter
 }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using System.Linq.Expressions;
 using TaskFlow.Application.DTOs.TaskItems;
 using TaskFlow.Application.Interfaces;
 using TaskFlow.Application.Mappers;
@@ -98,17 +99,13 @@ public class TaskItemService : ITaskItemService
     public async Task<bool> ReopenAsync(Guid id, Guid ownerId)
         => await _taskItemRepository.ReopenAsync(id, ownerId);
 
-    // ---------------------------------------------------------
-    // Filters
-    // ---------------------------------------------------------
+
+    // Begin-Filters
     public async Task<(IReadOnlyList<TaskItemDto> Items, int TotalCount)> GetFilteredItemsAsync(TaskItemFilter filter)
     {
         var spec = new TaskItemSpecification(filter);
 
-        var items = await _taskItemRepository.ListAsync(spec);
-        var totalCount = await _taskItemRepository.CountAsync(spec);
-
-        var dtos = items.Select(t => new TaskItemDto
+        var selector = (Expression<Func<TaskItem, TaskItemDto>>)(t => new TaskItemDto
         {
             Id = t.Id,
             Title = t.Title,
@@ -119,8 +116,12 @@ public class TaskItemService : ITaskItemService
             ProjectId = t.ProjectId,
             CreatedAt = t.CreatedAt,
             UpdatedAt = t.UpdatedAt
-        }).ToList();
+        });
+
+        var dtos = await _taskItemRepository.ListAsync(spec, selector);
+        var totalCount = await _taskItemRepository.CountAsync(spec);
 
         return (dtos, totalCount);
     }
+    // End-Filters
 }
