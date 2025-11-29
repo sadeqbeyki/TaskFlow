@@ -45,13 +45,21 @@
 <table class="table table-bordered table-striped">
     <thead>
         <tr>
-            <th><a asp-page="./Index" asp-route-SortBy="Title" asp-route-SortDescending="@(Model.Filter.SortBy == "Title" ? !Model.Filter.SortDescending : false)">Title</a></th>
+            <th>
+                <a asp-page="./Index"
+                   asp-route-SortBy="Title"
+                   asp-route-SortDescending="@(Model.Filter.SortBy == "Title" ? !Model.Filter.SortDescending : false)"
+                   asp-route-PageNumber="1">
+                    Title
+                </a>
+            </th>
+
             <th>Description</th>
             <th><a asp-page="./Index" asp-route-SortBy="Priority" asp-route-SortDescending="@(Model.Filter.SortBy == "Priority" ? !Model.Filter.SortDescending : false)">Priority</a></th>
             <th><a asp-page="./Index" asp-route-SortBy="Status" asp-route-SortDescending="@(Model.Filter.SortBy == "Status" ? !Model.Filter.SortDescending : false)">Status</a></th>
             <th><a asp-page="./Index" asp-route-SortBy="DueDate" asp-route-SortDescending="@(Model.Filter.SortBy == "DueDate" ? !Model.Filter.SortDescending : false)">Due Date</a></th>
             <th>Created At</th>
-@*             <td>
+            @*             <td>
                 <a asp-page="/Tasks/Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
                 <form method="post" asp-page-handler="Delete" asp-route-id="@t.Id" class="d-inline">
                     <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
@@ -87,7 +95,7 @@
                    asp-route-Status="@Model.Filter.Status"
                    asp-route-SortBy="@Model.Filter.SortBy"
                    asp-route-SortDescending="@Model.Filter.SortDescending">
-                   @i
+                    @i
                 </a>
             </li>
         }
