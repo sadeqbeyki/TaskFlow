@@ -14,17 +14,17 @@ public sealed class TaskItemSpecification : BaseSpecification<TaskItem>
         // Search
         if (!string.IsNullOrWhiteSpace(filter.SearchText))
         {
-            var search = filter.SearchText.ToLower();
+            var search = filter.SearchText.Trim();
             if (filter.SearchInDescription)
             {
                 AddCriteria(t =>
-                    t.Title.Contains(search, StringComparison.CurrentCultureIgnoreCase) ||
-                    (t.Description != null && t.Description.ToLower().Contains(search))
+                    t.Title.Contains(search) ||
+                    (t.Description != null && t.Description.Contains(search))
                 );
             }
             else
             {
-                AddCriteria(t => t.Title.Contains(search,StringComparison.CurrentCultureIgnoreCase));
+                AddCriteria(t => t.Title != null && t.Title.Contains(search));
             }
         }
 

@@ -24,8 +24,9 @@
         @foreach (var status in Enum.GetValues(typeof(TaskItemStatus)))
         {
             var isSelected = Model.Filter.Status == (TaskItemStatus?)status;
-            <option value="@status" selected="@(isSelected ? "selected" : null)">@status</option>
-
+            <option value="@status" selected="@(isSelected ? "selected" : null)">
+                @status
+            </option>
         }
     </select>
 
