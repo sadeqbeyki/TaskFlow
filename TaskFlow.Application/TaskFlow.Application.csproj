@@ -14,8 +14,4 @@
     <ProjectReference Include="..\TaskFlow.Core\TaskFlow.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Filters\" />
-  </ItemGroup>
-
 </Project>

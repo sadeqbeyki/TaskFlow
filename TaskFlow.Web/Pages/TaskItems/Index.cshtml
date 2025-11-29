@@ -25,6 +25,7 @@
         {
             var isSelected = Model.Filter.Status == (TaskItemStatus?)status;
             <option value="@status" selected="@(isSelected ? "selected" : null)">@status</option>
+
         }
     </select>
 

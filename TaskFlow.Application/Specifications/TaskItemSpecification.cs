@@ -18,13 +18,13 @@ public sealed class TaskItemSpecification : BaseSpecification<TaskItem>
             if (filter.SearchInDescription)
             {
                 AddCriteria(t =>
-                    t.Title.ToLower().Contains(search) ||
+                    t.Title.Contains(search, StringComparison.CurrentCultureIgnoreCase) ||
                     (t.Description != null && t.Description.ToLower().Contains(search))
                 );
             }
             else
             {
-                AddCriteria(t => t.Title.ToLower().Contains(search));
+                AddCriteria(t => t.Title.Contains(search,StringComparison.CurrentCultureIgnoreCase));
             }
         }
 
