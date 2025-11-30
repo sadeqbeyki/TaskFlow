@@ -48,12 +48,7 @@
             <th><a asp-page="./Index" asp-route-SortBy="Status" asp-route-SortDescending="@(Model.Filter.SortBy == "Status" ? !Model.Filter.SortDescending : false)">Status</a></th>
             <th><a asp-page="./Index" asp-route-SortBy="DueDate" asp-route-SortDescending="@(Model.Filter.SortBy == "DueDate" ? !Model.Filter.SortDescending : false)">Due Date</a></th>
             <th><a asp-page="./Index" asp-route-SortBy="CreatedAt" asp-route-SortDescending="@(Model.Filter.SortBy == "CreatedAt" ? !Model.Filter.SortDescending : false)">Created At</a></th>
-            @*             <td>
-                <a asp-page="/Tasks/Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
-                <form method="post" asp-page-handler="Delete" asp-route-id="@t.Id" class="d-inline">
-                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
-                </form>
-            </td> *@
+            <th>Operation</th>
         </tr>
     </thead>
     <tbody>
@@ -66,6 +61,12 @@
                 <td>@task.Status</td>
                 <td>@task.DueDate?.ToString("yyyy-MM-dd")</td>
                 <td>@task.CreatedAt.ToString("yyyy-MM-dd")</td>
+                <td>
+                    <a asp-page="/TaskItems/Edit" asp-route-id="@task.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
+                    <form method="post" asp-page="/TaskItems/Delete" asp-route-id="@task.Id" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                    </form>
+                </td>
             </tr>
         }
     </tbody>
