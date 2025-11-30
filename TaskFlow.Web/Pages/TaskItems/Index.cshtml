@@ -19,24 +19,13 @@
         <label class="form-check-label">Search in Description</label>
     </div>
 
-    <select name="Status" class="form-control mb-2">
+    <select asp-for="Filter.Status" class="form-control mb-2" asp-items="Html.GetEnumSelectList<TaskItemStatus>()">
         <option value="">All Status</option>
-        @foreach (var status in Enum.GetValues(typeof(TaskItemStatus)))
-        {
-            var isSelected = Model.Filter.Status == (TaskItemStatus?)status;
-            <option value="@status" selected="@(isSelected ? "selected" : null)">
-                @status
-            </option>
-        }
     </select>
 
-    <select name="Priority" class="form-control mb-2">
+
+    <select asp-for="Filter.Priority" class="form-control mb-2" asp-items="Html.GetEnumSelectList<TaskItemPriority>()">
         <option value="">All Priority</option>
-        @foreach (var p in Enum.GetValues(typeof(TaskItemPriority)))
-        {
-            var isSelected = Model.Filter.Priority == (TaskFlow.Core.Entities.TaskItemPriority?)p;
-            <option value="@p" selected="@(isSelected ? "selected" : null)">@p</option>
-        }
     </select>
 
     <button type="submit" class="btn btn-primary">Filter</button>
@@ -58,7 +47,7 @@
             <th><a asp-page="./Index" asp-route-SortBy="Priority" asp-route-SortDescending="@(Model.Filter.SortBy == "Priority" ? !Model.Filter.SortDescending : false)">Priority</a></th>
             <th><a asp-page="./Index" asp-route-SortBy="Status" asp-route-SortDescending="@(Model.Filter.SortBy == "Status" ? !Model.Filter.SortDescending : false)">Status</a></th>
             <th><a asp-page="./Index" asp-route-SortBy="DueDate" asp-route-SortDescending="@(Model.Filter.SortBy == "DueDate" ? !Model.Filter.SortDescending : false)">Due Date</a></th>
-            <th>Created At</th>
+            <th><a asp-page="./Index" asp-route-SortBy="CreatedAt" asp-route-SortDescending="@(Model.Filter.SortBy == "CreatedAt" ? !Model.Filter.SortDescending : false)">Created At</a></th>
             @*             <td>
                 <a asp-page="/Tasks/Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
                 <form method="post" asp-page-handler="Delete" asp-route-id="@t.Id" class="d-inline">

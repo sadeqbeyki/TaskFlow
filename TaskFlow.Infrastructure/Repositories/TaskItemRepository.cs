@@ -1,9 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using TaskFlow.Application.DTOs.TaskItems;
-using TaskFlow.Application.Specifications;
 using TaskFlow.Core.Entities;
-using TaskFlow.Core.Filters;
 using TaskFlow.Core.Repositories;
 using TaskFlow.Core.Specifications;
 
