@@ -60,6 +60,13 @@
     }
 }
 
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Message"]
+    </div>
+}
+
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="mb-0">Task List</h1>
 

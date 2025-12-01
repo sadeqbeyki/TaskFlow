@@ -56,10 +56,7 @@ namespace TaskFlow.Web.Pages.TaskItems
             {
                 var id = await _taskItemService.CreateAsync(taskItem, ownerId);
                 TempData["Message"] = "Task created successfully.";
-                return RedirectToPage("/TaskItems/Index");
-
-                //return RedirectToPage("/TaskItems/Details", new { Id = id });
-                //return RedirectToPage("/TaskItems/Index", new { projectId = inputModel.ProjectId });
+                return RedirectToPage("Index");
             }
             catch (UnauthorizedAccessException)
             {

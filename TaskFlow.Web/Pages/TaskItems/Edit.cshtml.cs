@@ -20,23 +20,21 @@ public class EditModel : PageModel
         _mapper = mapper;
     }
 
-    [BindProperty]
-    public TaskItemInputModel inputModel { get; set; } = new();
 
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
+    private Guid OwnerId => Guid.Parse("11111111-1111-1111-1111-111111111111");
 
-    private Guid OwnerId => Guid.Parse("11111111-1111-1111-1111-111111111111"); 
+    [BindProperty]
+    public TaskItemInputModel inputModel { get; set; } = new();
 
-
-    public async Task<IActionResult> OnGetAsync(Guid id)
+    public async Task<IActionResult> OnGetAsync()
     {
-        var taskItem = await _taskItemService.GetByIdAndOwnerAsync(id, OwnerId);
+        var taskItem = await _taskItemService.GetByIdAndOwnerAsync(Id, OwnerId);
         if (taskItem == null)
             return NotFound();
 
         inputModel = _mapper.Map<TaskItemInputModel>(taskItem);
-        Id = taskItem.Id;
 
         return Page();
     }
@@ -44,12 +42,12 @@ public class EditModel : PageModel
 
     public async Task<IActionResult> OnPostAsync()
     {
-        if (!ModelState.IsValid) 
+        if (!ModelState.IsValid)
             return Page();
 
-        var taskItem = _mapper.Map<TaskItemUpdateDto>(inputModel);
-        taskItem.Id = Id;
-        var operation = await _taskItemService.UpdateAsync(Id, taskItem, OwnerId);
+        var dto = _mapper.Map<TaskItemUpdateDto>(inputModel);
+        dto.Id = Id;
+        var operation = await _taskItemService.UpdateAsync(Id, dto, OwnerId);
         if (!operation)
         {
             ModelState.AddModelError(string.Empty, "Unable to update task.");
