@@ -21,8 +21,41 @@
         {
             TaskItemStatus.Done => "table-success",
             TaskItemStatus.InProgress => "table-warning",
-            TaskItemStatus.Todo => "table-danger",
+            TaskItemStatus.Todo => "table-danger text-dark",
             _ => ""
+        };
+    }
+
+    string PriorityBadgeClass(TaskItemPriority priority)
+    {
+        return priority switch
+        {
+            TaskItemPriority.High => "bg-danger",
+            TaskItemPriority.Medium => "bg-warning text-dark",
+            TaskItemPriority.Low => "bg-success",
+            _ => "bg-secondary"
+        };
+    }
+
+    string StatusBadgeClass(TaskItemStatus status)
+    {
+        return status switch
+        {
+            TaskItemStatus.Done => "bg-success",
+            TaskItemStatus.InProgress => "bg-info text-dark",
+            TaskItemStatus.Todo => "bg-secondary",
+            _ => "bg-light text-dark"
+        };
+    }
+
+    string StatusIcon(TaskItemStatus status)
+    {
+        return status switch
+        {
+            TaskItemStatus.Done => "bi-check-circle-fill",
+            TaskItemStatus.InProgress => "bi-arrow-repeat",
+            TaskItemStatus.Todo => "bi-circle",
+            _ => "bi-dot"
         };
     }
 }
@@ -40,17 +73,20 @@
 <form method="get" class="row g-3 mb-4">
 
     <div class="col-md-4">
-        <input type="text"
-               name="SearchText"
+        @*         <input type="text"
+               name="Filter.SearchText"
                value="@Model.Filter.SearchText"
                placeholder="Search..."
-               class="form-control" />
+               class="form-control" /> *@
+        <input asp-for="Filter.SearchText"
+               class="form-control"
+               placeholder="Search..." />
     </div>
 
     <div class="col-md-3 d-flex align-items-center">
         <input class="form-check-input me-2"
                type="checkbox"
-               name="SearchInDescription"
+               name="Filter.SearchInDescription"
                value="true"
                @(Model.Filter.SearchInDescription ? "checked" : "") />
 
@@ -76,7 +112,7 @@
     </div>
 
     <div class="col-md-1 d-grid">
-        <button type="submit" class="btn btn-primary">Apply Filter</button>
+        <button type="submit" class="btn btn-primary">Filter</button>
     </div>
 </form>
 
@@ -105,14 +141,6 @@
                 </a>
             </th>
 
-            <th>
-                <a class="text-decoration-none"
-                   asp-page="./Index"
-                   asp-route-SortBy="Status"
-                   asp-route-SortDescending="@(Model.Filter.SortBy == "Status" ? !Model.Filter.SortDescending : false)">
-                    Status @SortIcon("Status")
-                </a>
-            </th>
 
             <th>
                 <a class="text-decoration-none"
@@ -132,6 +160,15 @@
                 </a>
             </th>
 
+            <th>
+                <a class="text-decoration-none"
+                   asp-page="./Index"
+                   asp-route-SortBy="Status"
+                   asp-route-SortDescending="@(Model.Filter.SortBy == "Status" ? !Model.Filter.SortDescending : false)">
+                    Status @SortIcon("Status")
+                </a>
+            </th>
+
             <th class="text-center">Operation</th>
         </tr>
     </thead>
@@ -141,11 +178,26 @@
         {
             <tr>
                 <td>@task.Title</td>
+
                 <td>@task.Description</td>
-                <td>@task.Priority</td>
-                <td>@task.Status</td>
+
+                <td>
+                    <span class="badge @PriorityBadgeClass(task.Priority)">
+                        @task.Priority
+                    </span>
+                </td>
+
                 <td>@task.DueDate?.ToString("yyyy-MM-dd")</td>
+
                 <td>@task.CreatedAt.ToString("yyyy-MM-dd")</td>
+
+                <td>
+                    <span class="badge @StatusBadgeClass(task.Status)">
+                        <i class="bi @StatusIcon(task.Status)"></i>
+                        @task.Status
+                    </span>
+                </td>
+
 
                 <td class="text-center">
                     <a asp-page="/TaskItems/Edit"
@@ -192,88 +244,3 @@
     </ul>
 </nav>
 
-@* <h1>Task List</h1>
-
-<a asp-page="/TaskItems/Create" asp-route-projectId="@Request.Query["projectId"]" class="btn btn-primary mb-3">Create Task</a>
-
-<form method="get" class="mb-3">
-    <input type="text" name="SearchText" value="@Model.Filter.SearchText" placeholder="Search..." class="form-control mb-2" />
-
-    <div class="form-check mb-2">
-        <input class="form-check-input" type="checkbox" name="SearchInDescription" value="true" @(Model.Filter.SearchInDescription ? "checked" : "") />
-        <label class="form-check-label">Search in Description</label>
-    </div>
-
-    <select asp-for="Filter.Status" class="form-control mb-2" asp-items="Html.GetEnumSelectList<TaskItemStatus>()">
-        <option value="">All Status</option>
-    </select>
-
-
-    <select asp-for="Filter.Priority" class="form-control mb-2" asp-items="Html.GetEnumSelectList<TaskItemPriority>()">
-        <option value="">All Priority</option>
-    </select>
-
-    <button type="submit" class="btn btn-primary">Filter</button>
-</form>
-
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>
-                <a asp-page="./Index"
-                   asp-route-SortBy="Title"
-                   asp-route-SortDescending="@(Model.Filter.SortBy == "Title" ? !Model.Filter.SortDescending : false)"
-                   asp-route-PageNumber="1">
-                    Title
-                </a>
-            </th>
-
-            <th>Description</th>
-            <th><a asp-page="./Index" asp-route-SortBy="Priority" asp-route-SortDescending="@(Model.Filter.SortBy == "Priority" ? !Model.Filter.SortDescending : false)">Priority</a></th>
-            <th><a asp-page="./Index" asp-route-SortBy="Status" asp-route-SortDescending="@(Model.Filter.SortBy == "Status" ? !Model.Filter.SortDescending : false)">Status</a></th>
-            <th><a asp-page="./Index" asp-route-SortBy="DueDate" asp-route-SortDescending="@(Model.Filter.SortBy == "DueDate" ? !Model.Filter.SortDescending : false)">Due Date</a></th>
-            <th><a asp-page="./Index" asp-route-SortBy="CreatedAt" asp-route-SortDescending="@(Model.Filter.SortBy == "CreatedAt" ? !Model.Filter.SortDescending : false)">Created At</a></th>
-            <th>Operation</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var task in Model.TaskItems)
-        {
-            <tr>
-                <td>@task.Title</td>
-                <td>@task.Description</td>
-                <td>@task.Priority</td>
-                <td>@task.Status</td>
-                <td>@task.DueDate?.ToString("yyyy-MM-dd")</td>
-                <td>@task.CreatedAt.ToString("yyyy-MM-dd")</td>
-                <td>
-                    <a asp-page="/TaskItems/Edit" asp-route-id="@task.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
-                    <form method="post" asp-page="/TaskItems/Delete" asp-route-id="@task.Id" class="d-inline">
-                        <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
-                    </form>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-
-<nav>
-    <ul class="pagination">
-        @for (int i = 1; i <= Model.TotalPages; i++)
-        {
-            <li class="page-item @(Model.Filter.PageNumber == i ? "active" : "")">
-                <a class="page-link" asp-page="./Index"
-                   asp-route-PageNumber="@i"
-                   asp-route-PageSize="@Model.Filter.PageSize"
-                   asp-route-SearchText="@Model.Filter.SearchText"
-                   asp-route-Priority="@Model.Filter.Priority"
-                   asp-route-Status="@Model.Filter.Status"
-                   asp-route-SortBy="@Model.Filter.SortBy"
-                   asp-route-SortDescending="@Model.Filter.SortDescending">
-                    @i
-                </a>
-            </li>
-        }
-    </ul>
-</nav>
- *@
