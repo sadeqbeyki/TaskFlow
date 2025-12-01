@@ -7,7 +7,192 @@
     ViewData["Title"] = "Task List";
 }
 
-<h1>Task List</h1>
+@functions {
+    string SortIcon(string column)
+    {
+        if (Model.Filter.SortBy != column) return "";
+
+        return Model.Filter.SortDescending ? "↓" : "↑";
+    }
+
+    string RowClass(TaskItemStatus status)
+    {
+        return status switch
+        {
+            TaskItemStatus.Done => "table-success",
+            TaskItemStatus.InProgress => "table-warning",
+            TaskItemStatus.Todo => "table-danger",
+            _ => ""
+        };
+    }
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="mb-0">Task List</h1>
+
+    <a asp-page="/TaskItems/Create"
+       asp-route-projectId="@Request.Query["projectId"]"
+       class="btn btn-primary">
+        Create Task
+    </a>
+</div>
+
+<form method="get" class="row g-3 mb-4">
+
+    <div class="col-md-4">
+        <input type="text"
+               name="SearchText"
+               value="@Model.Filter.SearchText"
+               placeholder="Search..."
+               class="form-control" />
+    </div>
+
+    <div class="col-md-3 d-flex align-items-center">
+        <input class="form-check-input me-2"
+               type="checkbox"
+               name="SearchInDescription"
+               value="true"
+               @(Model.Filter.SearchInDescription ? "checked" : "") />
+
+        <label class="form-check-label">
+            Search in Description
+        </label>
+    </div>
+
+    <div class="col-md-2">
+        <select asp-for="Filter.Status"
+                class="form-select"
+                asp-items="Html.GetEnumSelectList<TaskItemStatus>()">
+            <option value="">All Status</option>
+        </select>
+    </div>
+
+    <div class="col-md-2">
+        <select asp-for="Filter.Priority"
+                class="form-select"
+                asp-items="Html.GetEnumSelectList<TaskItemPriority>()">
+            <option value="">All Priority</option>
+        </select>
+    </div>
+
+    <div class="col-md-1 d-grid">
+        <button type="submit" class="btn btn-primary">Apply Filter</button>
+    </div>
+</form>
+
+
+<table class="table table-hover align-middle">
+    <thead class="table-light">
+        <tr>
+            <th>
+                <a class="text-decoration-none"
+                   asp-page="./Index"
+                   asp-route-PageNumber="1"
+                   asp-route-SortBy="Title"
+                   asp-route-SortDescending="@(Model.Filter.SortBy == "Title" ? !Model.Filter.SortDescending : false)">
+                    Title @SortIcon("Title")
+                </a>
+            </th>
+
+            <th>Description</th>
+
+            <th>
+                <a class="text-decoration-none"
+                   asp-page="./Index"
+                   asp-route-SortBy="Priority"
+                   asp-route-SortDescending="@(Model.Filter.SortBy == "Priority" ? !Model.Filter.SortDescending : false)">
+                    Priority @SortIcon("Priority")
+                </a>
+            </th>
+
+            <th>
+                <a class="text-decoration-none"
+                   asp-page="./Index"
+                   asp-route-SortBy="Status"
+                   asp-route-SortDescending="@(Model.Filter.SortBy == "Status" ? !Model.Filter.SortDescending : false)">
+                    Status @SortIcon("Status")
+                </a>
+            </th>
+
+            <th>
+                <a class="text-decoration-none"
+                   asp-page="./Index"
+                   asp-route-SortBy="DueDate"
+                   asp-route-SortDescending="@(Model.Filter.SortBy == "DueDate" ? !Model.Filter.SortDescending : false)">
+                    Due Date @SortIcon("DueDate")
+                </a>
+            </th>
+
+            <th>
+                <a class="text-decoration-none"
+                   asp-page="./Index"
+                   asp-route-SortBy="CreatedAt"
+                   asp-route-SortDescending="@(Model.Filter.SortBy == "CreatedAt" ? !Model.Filter.SortDescending : false)">
+                    Created At @SortIcon("CreatedAt")
+                </a>
+            </th>
+
+            <th class="text-center">Operation</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var task in Model.TaskItems)
+        {
+            <tr>
+                <td>@task.Title</td>
+                <td>@task.Description</td>
+                <td>@task.Priority</td>
+                <td>@task.Status</td>
+                <td>@task.DueDate?.ToString("yyyy-MM-dd")</td>
+                <td>@task.CreatedAt.ToString("yyyy-MM-dd")</td>
+
+                <td class="text-center">
+                    <a asp-page="/TaskItems/Edit"
+                       asp-route-id="@task.Id"
+                       class="btn btn-sm btn-outline-secondary me-1">
+                        Edit
+                    </a>
+
+                    <form method="post"
+                          asp-page="/TaskItems/Delete"
+                          asp-route-id="@task.Id"
+                          class="d-inline">
+                        <button type="submit"
+                                class="btn btn-sm btn-outline-danger">
+                            Delete
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+<nav aria-label="Task list pagination">
+    <ul class="pagination justify-content-center mt-4">
+
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            <li class="page-item @(Model.Filter.PageNumber == i ? "active" : "")">
+                <a class="page-link"
+                   asp-page="./Index"
+                   asp-route-PageNumber="@i"
+                   asp-route-PageSize="@Model.Filter.PageSize"
+                   asp-route-SearchText="@Model.Filter.SearchText"
+                   asp-route-Priority="@Model.Filter.Priority"
+                   asp-route-Status="@Model.Filter.Status"
+                   asp-route-SortBy="@Model.Filter.SortBy"
+                   asp-route-SortDescending="@Model.Filter.SortDescending">
+                    @i
+                </a>
+            </li>
+        }
+    </ul>
+</nav>
+
+@* <h1>Task List</h1>
 
 <a asp-page="/TaskItems/Create" asp-route-projectId="@Request.Query["projectId"]" class="btn btn-primary mb-3">Create Task</a>
 
@@ -91,3 +276,4 @@
         }
     </ul>
 </nav>
+ *@
