@@ -67,7 +67,7 @@ public class TaskItemService : ITaskItemService
         if (task == null)
             return false;
 
-        task.UpdateDetails(dto.Title.Trim(), dto.Description, dto.DueDate, dto.Priority);
+        task.UpdateDetails(dto.Title.Trim(), dto.Description, dto.DueDate, dto.Priority,dto.Status);
 
         await _genericRepository.UpdateAsync(task);
 

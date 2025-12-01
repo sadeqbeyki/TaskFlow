@@ -57,7 +57,7 @@ public class TaskItem
     public DateTime? UpdatedAt { get; private set; }
 
     // Domain Behaviors
-    public void UpdateDetails(string title, string? description, DateTime? dueDate, TaskItemPriority priority)
+    public void UpdateDetails(string title, string? description, DateTime? dueDate, TaskItemPriority priority, TaskItemStatus status)
     {
         if (string.IsNullOrWhiteSpace(title))
             throw new ArgumentException("The title cannot be empty.");
@@ -66,6 +66,7 @@ public class TaskItem
         Description = description?.Trim();
         DueDate = dueDate;
         Priority = priority;
+        Status = status;
         UpdatedAt = DateTime.UtcNow;
     }
 
