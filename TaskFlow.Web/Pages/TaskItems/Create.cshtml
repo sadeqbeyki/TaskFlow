@@ -8,31 +8,31 @@
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
     <div class="mb-3">
-        <label asp-for="inputModel.Title" class="form-label"></label>
-        <input asp-for="inputModel.Title" class="form-control" />
-        <span asp-validation-for="inputModel.Title" class="text-danger"></span>
+        <label asp-for="InputModel.Title" class="form-label"></label>
+        <input asp-for="InputModel.Title" class="form-control" />
+        <span asp-validation-for="InputModel.Title" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="inputModel.Description" class="form-label"></label>
-        <textarea asp-for="inputModel.Description" class="form-control"></textarea>
-        <span asp-validation-for="inputModel.Description" class="text-danger"></span>
+        <label asp-for="InputModel.Description" class="form-label"></label>
+        <textarea asp-for="InputModel.Description" class="form-control"></textarea>
+        <span asp-validation-for="InputModel.Description" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="inputModel.Priority" class="form-label"></label>
-        <select asp-for="inputModel.Priority" class="form-select" asp-items="Html.GetEnumSelectList<TaskFlow.Core.Entities.TaskItemPriority>()"></select>
+        <label asp-for="InputModel.Priority" class="form-label"></label>
+        <select asp-for="InputModel.Priority" class="form-select" asp-items="Html.GetEnumSelectList<TaskFlow.Core.Entities.TaskItemPriority>()"></select>
     </div>
 
     <div class="mb-3">
-        <label asp-for="inputModel.DueDate" class="form-label"></label>
-        <input asp-for="inputModel.DueDate" type="date" class="form-control" />
+        <label asp-for="InputModel.DueDate" class="form-label"></label>
+        <input asp-for="InputModel.DueDate" type="date" class="form-control" />
     </div>
 
     <div class="mb-3">
-        <label asp-for="inputModel.ProjectId" class="form-label">Project</label>
-        <select asp-for="inputModel.ProjectId" class="form-select" asp-items="Model.ProjectList"></select>
-        <span asp-validation-for="inputModel.ProjectId" class="text-danger"></span>
+        <label asp-for="InputModel.ProjectId" class="form-label">Project</label>
+        <select asp-for="InputModel.ProjectId" class="form-select" asp-items="Model.ProjectList"></select>
+        <span asp-validation-for="InputModel.ProjectId" class="text-danger"></span>
     </div>
 
     <button type="submit" class="btn btn-primary">Create</button>

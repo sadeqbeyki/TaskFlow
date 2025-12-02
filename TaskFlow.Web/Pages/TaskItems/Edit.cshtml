@@ -37,6 +37,12 @@
     </div>
 
     <div class="mb-3">
+        <label asp-for="InputModel.ProjectId" class="form-label">Project</label>
+        <select asp-for="InputModel.ProjectId" class="form-select" asp-items="Model.ProjectList"></select>
+        <span asp-validation-for="InputModel.ProjectId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
         <label asp-for="InputModel.DueDate" class="form-label"></label>
         <input asp-for="InputModel.DueDate" type="date" class="form-control" />
     </div>

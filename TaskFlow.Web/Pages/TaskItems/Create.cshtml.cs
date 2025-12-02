@@ -1,69 +1,55 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Security.Claims;
 using TaskFlow.Application.DTOs.TaskItems;
 using TaskFlow.Application.Interfaces;
+using TaskFlow.Web.Common;
 using TaskFlow.Web.Pages.TaskItems.Models;
 
-namespace TaskFlow.Web.Pages.TaskItems
+namespace TaskFlow.Web.Pages.TaskItems;
+
+public class CreateModel(ITaskItemService taskService, IProjectService projectService, IMapper mapper) : BasePageModel
 {
-    public class CreateModel : PageModel
+    private readonly ITaskItemService _taskItemService = taskService;
+    private readonly IProjectService _projectService = projectService;
+    private readonly IMapper _mapper = mapper;
+
+    [BindProperty]
+    public TaskItemInputModel InputModel { get; set; } = new();
+    public SelectList ProjectList { get; set; } = new SelectList(new List<SelectListItem>());
+
+
+    [BindProperty(SupportsGet = true)]
+    public Guid Id { get; set; }
+
+    public async Task<IActionResult> OnGetAsync(Guid? projectId)
     {
-        private readonly ITaskItemService _taskItemService;
-        private readonly IProjectService _projectService;
-        private readonly IMapper _mapper;
+        var projects = await _projectService.GetAllByUserAsync(OwnerId);
+        ProjectList = new SelectList(projects, "Id", "Title", projectId?.ToString());
 
-        public CreateModel(ITaskItemService taskService, IProjectService projectService, IMapper mapper)
-        {
-            _taskItemService = taskService;
-            _projectService = projectService;
-            _mapper = mapper;
-        }
+        if (projectId.HasValue)
+            InputModel.ProjectId = projectId.Value;
 
-        [BindProperty]
-        public TaskItemInputModel inputModel { get; set; } = new();
-        public SelectList ProjectList { get; set; } = new SelectList(new List<SelectListItem>());
+        return Page();
+    }
 
 
-        [BindProperty(SupportsGet = true)]
-        public Guid Id { get; set; }
-
-        private readonly Guid _fakeOwnerId = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee");
-
-        public async Task<IActionResult> OnGetAsync(Guid? projectId)
-        {
-            var projects = await _projectService.GetAllByUserAsync(_fakeOwnerId);
-            ProjectList = new SelectList(projects, "Id", "Title", projectId?.ToString());
-
-            if (projectId.HasValue)
-                inputModel.ProjectId = projectId.Value;
-
+    public async Task<IActionResult> OnPostAsync()
+    {
+        if (!ModelState.IsValid)
             return Page();
-        }
 
+        var taskItem = _mapper.Map<TaskItemCreateDto>(InputModel);
 
-        public async Task<IActionResult> OnPostAsync()
+        try
         {
-            if (!ModelState.IsValid)
-                return Page();
-
-            Guid ownerId = _fakeOwnerId;
-            var taskItem = _mapper.Map<TaskItemCreateDto>(inputModel);
-
-            try
-            {
-                var id = await _taskItemService.CreateAsync(taskItem, ownerId);
-                TempData["Message"] = "Task created successfully.";
-                return RedirectToPage("Index");
-            }
-            catch (UnauthorizedAccessException)
-            {
-                return Forbid();
-            }
+            var id = await _taskItemService.CreateAsync(taskItem, OwnerId);
+            TempData["Message"] = "Task created successfully.";
+            return RedirectToPage("Index");
         }
-
-
+        catch (UnauthorizedAccessException)
+        {
+            return Forbid();
+        }
     }
 }

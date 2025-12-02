@@ -83,7 +83,7 @@ public class TaskItemService : ITaskItemService
         return true;
     }
 
-
+    // ---------------------------------------------------------
     // Begin-Filters
     public async Task<(IReadOnlyList<TaskItemDto> Items, int TotalCount)> GetFilteredItemsAsync(TaskItemFilter filter)
     {
@@ -108,10 +108,11 @@ public class TaskItemService : ITaskItemService
         return (dtos, totalCount);
     }
     // End-Filters
+    // ---------------------------------------------------------
+
 
     // ---------------------------------------------------------
-    // Status changes
-    // ---------------------------------------------------------
+    // Begin Status changes
     public async Task<bool> ChangeStatusAsync(Guid id, TaskItemStatusUpdateDto dto, Guid ownerId)
         => await _taskItemRepository.ChangeStatusAsync(id, dto.Status, ownerId);
 
@@ -124,4 +125,6 @@ public class TaskItemService : ITaskItemService
 
     public async Task<bool> ReopenAsync(Guid id, Guid ownerId)
         => await _taskItemRepository.ReopenAsync(id, ownerId);
+    // End Status changes
+    // ---------------------------------------------------------
 }

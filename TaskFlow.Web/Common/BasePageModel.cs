@@ -14,7 +14,7 @@ public abstract class BasePageModel : PageModel
     //_currentUser.UserId
     //protected Guid OwnerId => User.GetCurrentUserId();
 
-    protected Guid OwnerId => Guid.Parse("11111111-1111-1111-1111-111111111111");
+    protected Guid OwnerId => Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee");
 
 
     protected void SetSuccess(string message)
