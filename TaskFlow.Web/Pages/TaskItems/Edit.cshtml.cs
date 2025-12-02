@@ -1,32 +1,22 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 using TaskFlow.Application.DTOs.TaskItems;
 using TaskFlow.Application.Interfaces;
-using TaskFlow.Core.Entities;
+using TaskFlow.Web.Common;
 using TaskFlow.Web.Pages.TaskItems.Models;
 
 namespace TaskFlow.Web.Pages.TaskItems;
 
-public class EditModel : PageModel
+public class EditModel(ITaskItemService taskItemService, IMapper mapper) : BasePageModel
 {
-    private readonly ITaskItemService _taskItemService;
-    private readonly IMapper _mapper;
-
-    public EditModel(ITaskItemService taskItemService, IMapper mapper)
-    {
-        _taskItemService = taskItemService;
-        _mapper = mapper;
-    }
-
+    private readonly ITaskItemService _taskItemService = taskItemService;
+    private readonly IMapper _mapper = mapper;
 
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
-    private Guid OwnerId => Guid.Parse("11111111-1111-1111-1111-111111111111");
 
     [BindProperty]
-    public TaskItemInputModel inputModel { get; set; } = new();
+    public TaskItemInputModel InputModel { get; set; } = new();
 
     public async Task<IActionResult> OnGetAsync()
     {
@@ -34,8 +24,7 @@ public class EditModel : PageModel
         if (taskItem == null)
             return NotFound();
 
-        inputModel = _mapper.Map<TaskItemInputModel>(taskItem);
-
+        InputModel = _mapper.Map<TaskItemInputModel>(taskItem);
         return Page();
     }
 
@@ -45,16 +34,15 @@ public class EditModel : PageModel
         if (!ModelState.IsValid)
             return Page();
 
-        var dto = _mapper.Map<TaskItemUpdateDto>(inputModel);
-        dto.Id = Id;
+        var dto = _mapper.Map<TaskItemUpdateDto>(InputModel);
+
         var operation = await _taskItemService.UpdateAsync(Id, dto, OwnerId);
         if (!operation)
         {
-            ModelState.AddModelError(string.Empty, "Unable to update task.");
+            SetError("Unable to update task.");
             return Page();
         }
-
-        TempData["Message"] = "Task updated successfully.";
+        SetSuccess("Task updated successfully.");
         return RedirectToPage("Index");
     }
 }

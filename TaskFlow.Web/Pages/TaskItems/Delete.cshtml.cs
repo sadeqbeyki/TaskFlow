@@ -1,12 +1,12 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using TaskFlow.Application.Interfaces;
+using TaskFlow.Web.Common;
 using TaskFlow.Web.Pages.TaskItems.Models;
 
 namespace TaskFlow.Web.Pages.TaskItems;
 
-public class DeleteModel : PageModel
+public class DeleteModel : BasePageModel
 {
     private readonly ITaskItemService _taskItemService;
     private readonly IMapper _mapper;
@@ -19,11 +19,10 @@ public class DeleteModel : PageModel
 
     [BindProperty]
     public TaskItemViewModel viewModel { get; set; } = new();
-    private readonly Guid _fakeOwnerId = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee");
 
     public async Task<IActionResult> OnGetAsync(Guid id)
     {
-        var dto = await _taskItemService.GetByIdAndOwnerAsync(id, _fakeOwnerId);
+        var dto = await _taskItemService.GetByIdAndOwnerAsync(id, OwnerId);
         if (dto == null)
             return NotFound();
 
@@ -36,7 +35,7 @@ public class DeleteModel : PageModel
     {
         try
         {
-            await _taskItemService.DeleteAsync(id, _fakeOwnerId);
+            await _taskItemService.DeleteAsync(id, OwnerId);
             TempData["Message"] = "Task deleted successfully.";
             return RedirectToPage("Index");
         }

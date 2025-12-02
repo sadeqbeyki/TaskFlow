@@ -67,7 +67,7 @@ public class TaskItemService : ITaskItemService
         if (task == null)
             return false;
 
-        task.UpdateDetails(dto.Title.Trim(), dto.Description, dto.DueDate, dto.Priority,dto.Status);
+        task.UpdateDetails(dto.Title.Trim(), dto.Description, dto.DueDate, dto.Priority, dto.ProjectId);
 
         await _genericRepository.UpdateAsync(task);
 
@@ -82,22 +82,6 @@ public class TaskItemService : ITaskItemService
         await _genericRepository.DeleteAsync(id);
         return true;
     }
-
-    // ---------------------------------------------------------
-    // Status changes
-    // ---------------------------------------------------------
-    public async Task<bool> ChangeStatusAsync(Guid id, TaskItemStatusUpdateDto dto, Guid ownerId)
-        => await _taskItemRepository.ChangeStatusAsync(id, dto.Status, ownerId);
-
-    public async Task<bool> MarkInProgressAsync(Guid id, Guid ownerId)
-        => await _taskItemRepository.MarkInProgressAsync(id, ownerId);
-
-    public async Task<bool> MarkDoneAsync(Guid id, Guid ownerId)
-        => await _taskItemRepository.MarkDoneAsync(id, ownerId);
-
-
-    public async Task<bool> ReopenAsync(Guid id, Guid ownerId)
-        => await _taskItemRepository.ReopenAsync(id, ownerId);
 
 
     // Begin-Filters
@@ -124,4 +108,20 @@ public class TaskItemService : ITaskItemService
         return (dtos, totalCount);
     }
     // End-Filters
+
+    // ---------------------------------------------------------
+    // Status changes
+    // ---------------------------------------------------------
+    public async Task<bool> ChangeStatusAsync(Guid id, TaskItemStatusUpdateDto dto, Guid ownerId)
+        => await _taskItemRepository.ChangeStatusAsync(id, dto.Status, ownerId);
+
+    public async Task<bool> MarkInProgressAsync(Guid id, Guid ownerId)
+        => await _taskItemRepository.MarkInProgressAsync(id, ownerId);
+
+    public async Task<bool> MarkDoneAsync(Guid id, Guid ownerId)
+        => await _taskItemRepository.MarkDoneAsync(id, ownerId);
+
+
+    public async Task<bool> ReopenAsync(Guid id, Guid ownerId)
+        => await _taskItemRepository.ReopenAsync(id, ownerId);
 }

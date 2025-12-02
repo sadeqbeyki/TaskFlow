@@ -64,12 +64,6 @@ namespace TaskFlow.Web.Pages.TaskItems
             }
         }
 
-        private Guid GetCurrentUserId()
-        {
-            var id = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (!Guid.TryParse(id, out var guid))
-                throw new InvalidOperationException("User not authenticated.");
-            return guid;
-        }
+
     }
 }

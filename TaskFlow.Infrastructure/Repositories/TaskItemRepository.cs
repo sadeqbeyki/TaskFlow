@@ -28,7 +28,7 @@ public class TaskItemRepository : GenericRepository<TaskItem, Guid>, ITaskItemRe
                 if (task.Status == TaskItemStatus.Done)
                     task.Reopen();
                 else
-                    task.UpdateDetails(task.Title, task.Description, task.DueDate, task.Priority, task.Status); // no-op but update timestamp? (we keep no-op)
+                    task.UpdateDetails(task.Title, task.Description, task.DueDate, task.Priority,task.ProjectId); // no-op but update timestamp? (we keep no-op)
                 break;
             case TaskItemStatus.InProgress:
                 task.MarkInProgress();

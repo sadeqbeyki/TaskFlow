@@ -4,16 +4,16 @@ using TaskFlow.Web.Pages.TaskItems.Models;
 
 namespace TaskFlow.Web.Pages.TaskItems.Mappers;
 
-public class TaskItemUiProfile:Profile
+public class TaskItemUiProfile : Profile
 {
     public TaskItemUiProfile()
     {
-        CreateMap<TaskItemDto, TaskItemInputModel>().ReverseMap();
-        CreateMap<TaskItemDto, TaskItemViewModel>().ReverseMap();
+        CreateMap<TaskItemDto, TaskItemInputModel>();
+        CreateMap<TaskItemInputModel, TaskItemUpdateDto>();
 
-        CreateMap<TaskItemUpdateDto, TaskItemInputModel>().ReverseMap();
-        CreateMap<TaskItemCreateDto, TaskItemInputModel>().ReverseMap();
+        CreateMap<TaskItemDto, TaskItemViewModel>();
 
+        CreateMap<TaskItemInputModel, TaskItemCreateDto>();
     }
 
 }

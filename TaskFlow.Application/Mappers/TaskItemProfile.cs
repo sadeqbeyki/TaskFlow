@@ -10,7 +10,6 @@ public class TaskItemProfile : Profile
     public TaskItemProfile()
     {
         CreateMap<TaskItem, TaskItemDto>().ReverseMap();
-        CreateMap<TaskItem, TaskItemUpdateDto>().ReverseMap();
         CreateMap<TaskItemDto, TaskItemFilter>().ReverseMap();
 
     }
