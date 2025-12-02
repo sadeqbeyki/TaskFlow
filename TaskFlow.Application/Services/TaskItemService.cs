@@ -35,9 +35,7 @@ public class TaskItemService : ITaskItemService
     {
         var taskList = await _taskItemRepository.GetByProjectAsync(projectId);
 
-        return taskList
-            .Select(TaskItemMapper.MapToDto)
-            .ToList();
+        return _mapper.Map<List<TaskItemDto>>(taskList);
     }
 
     public async Task<Guid> CreateAsync(TaskItemCreateDto dto, Guid ownerId)

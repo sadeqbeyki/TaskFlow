@@ -1,6 +1,6 @@
-﻿using TaskFlow.Application.DTOs.Projects;
+﻿using AutoMapper;
+using TaskFlow.Application.DTOs.Projects;
 using TaskFlow.Application.Interfaces;
-using TaskFlow.Application.Mappers;
 using TaskFlow.Core.Entities;
 using TaskFlow.Core.Repositories;
 
@@ -10,29 +10,30 @@ public class ProjectService : IProjectService
 {
     private readonly IGenericRepository<Project, Guid> _genericRepository;
     private readonly IProjectRepository _projectRepository;
+    private readonly IMapper _mapper;
 
-    public ProjectService(IGenericRepository<Project, Guid> genericRepository, IProjectRepository projectRepository)
+    public ProjectService(IGenericRepository<Project, Guid> genericRepository, IProjectRepository projectRepository, IMapper mapper)
     {
         _genericRepository = genericRepository;
         _projectRepository = projectRepository;
+        _mapper = mapper;
     }
 
     public async Task<ProjectDto?> GetByIdAsync(Guid id, Guid ownerId)
     {
         var project = await _genericRepository.GetByIdAsync(id);
 
-        return project is null
-                ? null
-                : ProjectMapper.MapToDto(project);
+        return project is null 
+            ? null 
+            : _mapper.Map<ProjectDto?>(project);
     }
 
-    public async Task<List<ProjectDto>> GetAllByUserAsync(Guid ownerId)
+    public async Task<List<ProjectDto>?> GetAllByUserAsync(Guid ownerId)
     {
         var projects = await _projectRepository.GetByOwnerAsync(ownerId);
-        return projects
-            .Select(ProjectMapper.MapToDto)!
-            .ToList();
-
+        return projects is null 
+            ? null 
+            : _mapper.Map<List<ProjectDto>?>(projects);
     }
 
     public async Task<Guid> CreateAsync(ProjectCreateDto dto, Guid ownerId)
