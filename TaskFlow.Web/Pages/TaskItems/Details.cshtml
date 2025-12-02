@@ -1,20 +1,99 @@
 ﻿@page "{id:guid}"
+@using TaskFlow.Core.Entities
 @model TaskFlow.Web.Pages.TaskItems.DetailsModel
-@{
+
+@functions{
+public string GetPriorityClass(TaskItemPriority p)
+{
+    return p switch
+    {
+        TaskItemPriority.High => "bg-danger",
+        TaskItemPriority.Medium => "bg-warning text-dark",
+        TaskItemPriority.Low => "bg-success",
+        _ => "bg-secondary"
+    };
+}
+
+public string GetStatusClass(TaskItemStatus s)
+{
+    return s switch
+    {
+        TaskItemStatus.Done => "bg-success",
+        TaskItemStatus.InProgress => "bg-primary",
+        TaskItemStatus.Todo => "bg-secondary",
+        _ => "bg-dark"
+    };
+}
 }
 
 
-<h2>Task Details</h2>
-<div class="card">
-<div class="card-body">
-<h5>@Model.viewModel.Title</h5>
-<p>@Model.viewModel.Description</p>
-<ul>
-<li>Priority: @Model.viewModel.Priority</li>
-<li>Status: @Model.viewModel.Status</li>
-<li>Due Date: @Model.viewModel.DueDate?.ToShortDateString()</li>
-</ul>
-<a asp-page="Edit" asp-route-id="@Model.viewModel.Id" class="btn btn-primary">Edit</a>
-<a asp-page="Index" class="btn btn-secondary">Back</a>
-</div>
+
+<div class="card shadow-sm">
+    <div class="card-header bg-light">
+        <h5 class="mb-0">Task Details</h5>
+    </div>
+
+    <div class="card-body">
+
+        <dl class="row mb-0">
+
+            <dt class="col-sm-3 fw-bold">Title</dt>
+            <dd class="col-sm-9">@Model.ViewModel.Title</dd>
+
+            <dt class="col-sm-3 fw-bold">Description</dt>
+            <dd class="col-sm-9">@Model.ViewModel.Description</dd>
+
+            <dt class="col-sm-3 fw-bold">Due Date</dt>
+            <dd class="col-sm-9">
+                @(Model.ViewModel.DueDate?.ToString("yyyy-MM-dd") ?? "—")
+            </dd>
+
+            <dt class="col-sm-3 fw-bold">Priority</dt>
+            <dd class="col-sm-9">
+                <span class="badge @GetPriorityClass(Model.ViewModel.Priority)">
+                    @Model.ViewModel.Priority
+                </span>
+            </dd>
+
+            <dt class="col-sm-3 fw-bold">Status</dt>
+            <dd class="col-sm-9">
+                <span class="badge @GetStatusClass(Model.ViewModel.Status)">
+                    @Model.ViewModel.Status
+                </span>
+            </dd>
+
+            <dt class="col-sm-3 fw-bold">Project</dt>
+            <dd class="col-sm-9">
+                @if (Model.ViewModel.ProjectId != null)
+                {
+                    <a asp-page="/Projects/Details"
+                       asp-route-id="@Model.ViewModel.ProjectId"
+                       class="badge bg-info text-dark text-decoration-none">
+                        @Model.ViewModel.ProjectName
+                    </a>
+                }
+                else
+                {
+                    <span class="text-muted">No project</span>
+                }
+            </dd>
+
+            <dt class="col-sm-3 fw-bold">Created At</dt>
+            <dd class="col-sm-9">
+                @Model.ViewModel.CreatedAt.ToString("yyyy-MM-dd HH:mm")
+            </dd>
+
+            <dt class="col-sm-3 fw-bold">Updated At</dt>
+            <dd class="col-sm-9">
+                @(Model.ViewModel.UpdatedAt?.ToString("yyyy-MM-dd HH:mm") ?? "—")
+            </dd>
+
+        </dl>
+
+        <div class="mt-4 d-flex gap-2">
+            <a asp-page="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+            <a asp-page="Index" class="btn btn-secondary">Back</a>
+        </div>
+
+    </div>
 </div>

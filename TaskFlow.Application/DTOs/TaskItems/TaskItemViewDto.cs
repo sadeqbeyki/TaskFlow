@@ -2,7 +2,7 @@
 
 namespace TaskFlow.Application.DTOs.TaskItems;
 
-public class TaskItemDto
+public class TaskItemViewDto
 {
     public Guid Id { get; set; }
     public string Title { get; set; } = string.Empty;
@@ -11,6 +11,8 @@ public class TaskItemDto
     public TaskItemPriority Priority { get; set; }
     public TaskItemStatus Status { get; set; }
     public Guid? ProjectId { get; set; }
+    public string? ProjectName { get; set; }
+
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
 }

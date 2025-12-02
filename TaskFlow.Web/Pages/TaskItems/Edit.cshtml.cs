@@ -26,7 +26,7 @@ public class EditModel(IProjectService projectService,ITaskItemService taskItemS
         var projects = await _projectService.GetAllByUserAsync(OwnerId);
         ProjectList = new SelectList(projects, "Id", "Title", projectId?.ToString());
 
-        var taskItem = await _taskItemService.GetByIdAndOwnerAsync(Id, OwnerId);
+        var taskItem = await _taskItemService.GetDetailsAsync(Id, OwnerId);
         if (taskItem == null)
             return NotFound();
 

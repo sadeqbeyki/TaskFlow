@@ -18,4 +18,5 @@ public interface ITaskItemRepository : IGenericRepository<TaskItem, Guid>
 
     Task<int> CountAsync(ISpecification<TaskItem> spec, CancellationToken cancellationToken = default);
     Task<List<TResult>> ListAsync<TResult>(ISpecification<TaskItem> spec, Expression<Func<TaskItem, TResult>> selector, CancellationToken cancellationToken = default);
+    Task<TaskItem?> GetByIdWithProjectAsync(Guid id, Guid ownerId);
 }

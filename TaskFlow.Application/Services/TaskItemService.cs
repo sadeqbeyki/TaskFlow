@@ -23,11 +23,12 @@ public class TaskItemService : ITaskItemService
         _mapper = mapper;
     }
 
-    public async Task<TaskItemDto?> GetByIdAndOwnerAsync(Guid id, Guid ownerId)
+    public async Task<TaskItemViewDto?> GetDetailsAsync(Guid id, Guid ownerId)
     {
-        var task = await _genericRepository.GetByIdAsync(id);
-
-        return task is null ? null : TaskItemMapper.MapToDto(task);
+        var task = await _taskItemRepository.GetByIdWithProjectAsync(id, ownerId);
+        return task == null 
+            ? null 
+            : _mapper.Map<TaskItemViewDto>(task);
     }
 
     public async Task<List<TaskItemDto>> GetAllByProjectAsync(Guid projectId, Guid ownerId)

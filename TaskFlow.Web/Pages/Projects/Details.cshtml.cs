@@ -1,27 +1,19 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using TaskFlow.Application.Interfaces;
 using TaskFlow.Application.DTOs.Projects;
+using TaskFlow.Web.Common;
 
 namespace TaskFlow.Web.Pages.Projects
 {
-    public class DetailsModel : PageModel
+    public class DetailsModel(IProjectService projectService) : BasePageModel
     {
-        private readonly IProjectService _projectService;
-
-       
-        private readonly Guid _fakeOwnerId = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee");
+        private readonly IProjectService _projectService = projectService;
 
         public ProjectDto? Project { get; private set; }
 
-        public DetailsModel(IProjectService projectService)
-        {
-            _projectService = projectService;
-        }
-
         public async Task<IActionResult> OnGetAsync(Guid id)
         {
-            Project = await _projectService.GetByIdAsync(id, _fakeOwnerId);
+            Project = await _projectService.GetByIdAsync(id, OwnerId);
 
             if (Project == null)
                 return NotFound();

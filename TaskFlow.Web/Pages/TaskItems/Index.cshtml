@@ -212,7 +212,11 @@
                        class="btn btn-sm btn-outline-secondary me-1">
                         Edit
                     </a>
-
+                    <a asp-page="/TaskItems/Details"
+                       asp-route-id="@task.Id"
+                       class="btn btn-sm btn-outline-warning me-1">
+                        Details
+                    </a>
                     <form method="post"
                           asp-page="/TaskItems/Delete"
                           asp-route-id="@task.Id"

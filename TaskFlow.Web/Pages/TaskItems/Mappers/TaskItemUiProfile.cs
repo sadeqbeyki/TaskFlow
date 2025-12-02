@@ -8,12 +8,12 @@ public class TaskItemUiProfile : Profile
 {
     public TaskItemUiProfile()
     {
-        CreateMap<TaskItemDto, TaskItemInputModel>();
+        CreateMap<TaskItemViewDto, TaskItemInputModel>();
         CreateMap<TaskItemInputModel, TaskItemUpdateDto>();
 
-        CreateMap<TaskItemDto, TaskItemViewModel>();
-
         CreateMap<TaskItemInputModel, TaskItemCreateDto>();
+
+        CreateMap<TaskItemViewDto, TaskItemViewModel>();
     }
 
 }

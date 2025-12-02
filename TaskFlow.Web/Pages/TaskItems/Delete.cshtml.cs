@@ -22,7 +22,7 @@ public class DeleteModel : BasePageModel
 
     public async Task<IActionResult> OnGetAsync(Guid id)
     {
-        var dto = await _taskItemService.GetByIdAndOwnerAsync(id, OwnerId);
+        var dto = await _taskItemService.GetDetailsAsync(id, OwnerId);
         if (dto == null)
             return NotFound();
 
