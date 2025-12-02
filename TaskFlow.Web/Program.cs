@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 
-builder.Services.AddAutoMapper(cfg => { }, typeof(TaskItemProfile), typeof(TaskItemUiProfile) /*, ...*/);
+builder.Services.AddAutoMapper(cfg => { }, typeof(TaskItemProfile), typeof(TaskItemUiProfile), typeof(ProjectProfile) /*, ...*/);
 
 // Register DbContext with connection string
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")

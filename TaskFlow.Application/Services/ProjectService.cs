@@ -23,17 +23,21 @@ public class ProjectService : IProjectService
     {
         var project = await _genericRepository.GetByIdAsync(id);
 
-        return project is null 
-            ? null 
+        return project is null
+            ? null
             : _mapper.Map<ProjectDto?>(project);
     }
 
-    public async Task<List<ProjectDto>?> GetAllByUserAsync(Guid ownerId)
+    public async Task<List<ProjectDto>> GetAllByUserAsync(Guid ownerId)
     {
-        var projects = await _projectRepository.GetByOwnerAsync(ownerId);
-        return projects is null 
-            ? null 
-            : _mapper.Map<List<ProjectDto>?>(projects);
+        var entity = await _projectRepository.GetByOwnerAsync(ownerId);
+        if (entity is null)
+        { 
+            return null; 
+        }
+
+        var projectList = _mapper.Map<List<ProjectDto>>(entity);
+        return projectList;
     }
 
     public async Task<Guid> CreateAsync(ProjectCreateDto dto, Guid ownerId)

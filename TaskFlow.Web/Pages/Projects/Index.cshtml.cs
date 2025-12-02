@@ -1,34 +1,18 @@
-using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc;
 using TaskFlow.Application.DTOs.Projects;
 using TaskFlow.Application.Interfaces;
-using System.Security.Claims;
+using TaskFlow.Web.Common;
 
 namespace TaskFlow.Web.Pages.Projects;
 
-public class IndexModel : PageModel
+public class IndexModel(IProjectService projectService) : BasePageModel
 {
-    private readonly IProjectService _projectService;
-    public List<ProjectDto> Projects { get; private set; } = new();
-    private readonly Guid _fakeOwnerId = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee");
-    public IndexModel(IProjectService projectService)
-    {
-        _projectService = projectService;
-    }
+    private readonly IProjectService _projectService= projectService;
 
+    [BindProperty(SupportsGet = true)]
+    public List<ProjectDto> Projects { get; private set; } = new();
     public async Task OnGetAsync()
     {
-        var ownerId = _fakeOwnerId;
-        Projects = await _projectService.GetAllByUserAsync(ownerId);
-    }
-
-    private Guid GetCurrentUserId()
-    {
-        var id = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (!Guid.TryParse(id, out var guid))
-        {
-            // for dev: return a test guid or throw
-            throw new InvalidOperationException("User not authenticated.");
-        }
-        return guid;
+        Projects = await _projectService.GetAllByUserAsync(OwnerId);
     }
 }
