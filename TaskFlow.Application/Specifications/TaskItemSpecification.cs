@@ -9,7 +9,8 @@ public sealed class TaskItemSpecification : BaseSpecification<TaskItem>
 {
     public TaskItemSpecification(TaskItemFilter filter)
     {
-        if (filter == null) throw new ArgumentNullException(nameof(filter));
+        if (filter == null) 
+            throw new ArgumentNullException(nameof(filter));
 
         // Search
         if (!string.IsNullOrWhiteSpace(filter.SearchText))
@@ -60,8 +61,11 @@ public sealed class TaskItemSpecification : BaseSpecification<TaskItem>
             case "status":
                 ApplySorting(filter.SortDescending, t => t.Status);
                 break;
+            case "projectname":
+                AddInclude(t => t.Project);
+                ApplySorting(filter.SortDescending, t => t.Project.Title);
+                break;
             case "createdat":
-            case "created":
                 ApplySorting(filter.SortDescending, t => t.CreatedAt);
                 break;
             default:

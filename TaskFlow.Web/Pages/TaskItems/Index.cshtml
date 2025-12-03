@@ -175,7 +175,14 @@
                     Status @SortIcon("Status")
                 </a>
             </th>
-
+            <th>
+                <a class="text-decoration-none"
+                   asp-page="./Index"
+                   asp-route-SortBy="ProjectName"
+                   asp-route-SortDescending="@(Model.Filter.SortBy == "ProjectName" ? !Model.Filter.SortDescending : false)">
+                    Project Name @SortIcon("ProjectName")
+                </a>
+            </th>
             <th class="text-center">Operation</th>
         </tr>
     </thead>
@@ -204,7 +211,16 @@
                         @task.Status
                     </span>
                 </td>
-
+                <td>
+                    @if (task.ProjectId != null)
+                    {
+                        <span class="badge bg-primary">@task.ProjectName</span>
+                    }
+                    else
+                    {
+                        <span class="text-muted">No project</span>
+                    }
+                </td>
 
                 <td class="text-center">
                     <a asp-page="/TaskItems/Edit"

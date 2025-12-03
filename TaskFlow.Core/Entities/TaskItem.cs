@@ -18,8 +18,7 @@ public enum TaskItemStatus
 
 public class TaskItem
 {
-    // Constructor for creating a new task
-    /*private*/ public TaskItem() { }  // For EF Core
+    private TaskItem() { }  
 
 
     public TaskItem(string title, string? description, Guid? projectId, DateTime? dueDate = null,

@@ -5,6 +5,7 @@ using TaskFlow.Application.Interfaces;
 using TaskFlow.Application.Mappers;
 using TaskFlow.Application.Specifications;
 using TaskFlow.Core.Entities;
+using TaskFlow.Core.Factories;
 using TaskFlow.Core.Filters;
 using TaskFlow.Core.Repositories;
 
@@ -38,25 +39,24 @@ public class TaskItemService : ITaskItemService
         return _mapper.Map<List<TaskItemDto>>(taskList);
     }
 
-    public async Task<Guid> CreateAsync(TaskItemCreateDto dto, Guid ownerId)
+    public async Task<bool> CreateAsync(TaskItemCreateDto dto, Guid ownerId)
     {
         var projectExists = await _taskItemRepository.ValidateProjectOwnerAsync(dto.ProjectId, ownerId);
 
         if (!projectExists)
             throw new UnauthorizedAccessException("Project does not belong to this user.");
 
-
-        var task = new TaskItem(
-            title: dto.Title.Trim(),
-            description: dto.Description,
-            projectId: dto.ProjectId,
-            dueDate: dto.DueDate,
-            priority: dto.Priority
+        var task = TaskItemFactory.Create(
+            dto.Title,
+            dto.Description,
+            dto.ProjectId,
+            dto.DueDate,
+            dto.Priority
         );
 
         await _genericRepository.AddAsync(task);
 
-        return task.Id;
+        return true;
     }
 
     public async Task<bool> UpdateAsync(Guid id, TaskItemUpdateDto dto, Guid ownerId)
@@ -97,6 +97,7 @@ public class TaskItemService : ITaskItemService
             Priority = t.Priority,
             Status = t.Status,
             ProjectId = t.ProjectId,
+            ProjectName = t.Project != null ? t.Project.Title : null,
             CreatedAt = t.CreatedAt,
             UpdatedAt = t.UpdatedAt
         });
