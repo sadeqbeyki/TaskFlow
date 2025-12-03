@@ -61,7 +61,7 @@ public sealed class TaskItemSpecification : BaseSpecification<TaskItem>
             case "status":
                 ApplySorting(filter.SortDescending, t => t.Status);
                 break;
-            case "projectname":
+            case "projecttitle":
                 AddInclude(t => t.Project);
                 ApplySorting(filter.SortDescending, t => t.Project.Title);
                 break;

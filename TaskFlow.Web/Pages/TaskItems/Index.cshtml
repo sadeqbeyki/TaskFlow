@@ -178,9 +178,9 @@
             <th>
                 <a class="text-decoration-none"
                    asp-page="./Index"
-                   asp-route-SortBy="ProjectName"
-                   asp-route-SortDescending="@(Model.Filter.SortBy == "ProjectName" ? !Model.Filter.SortDescending : false)">
-                    Project Name @SortIcon("ProjectName")
+                   asp-route-SortBy="ProjectTitle"
+                   asp-route-SortDescending="@(Model.Filter.SortBy == "ProjectTitle" ? !Model.Filter.SortDescending : false)">
+                    Project Title @SortIcon("ProjectTitle")
                 </a>
             </th>
             <th class="text-center">Operation</th>
@@ -214,7 +214,7 @@
                 <td>
                     @if (task.ProjectId != null)
                     {
-                        <span class="badge bg-primary">@task.ProjectName</span>
+                        <span class="badge bg-primary">@task.ProjectTitle</span>
                     }
                     else
                     {

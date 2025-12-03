@@ -12,7 +12,7 @@ public class TaskItemProfile : Profile
         CreateMap<TaskItem, TaskItemDto>().ReverseMap();
 
         CreateMap<TaskItem, TaskItemViewDto>()
-            .ForMember(dest => dest.ProjectName,
+            .ForMember(dest => dest.ProjectTitle,
                opt => opt.MapFrom(src => src.Project != null
                                           ? src.Project.Title
                                           : null));

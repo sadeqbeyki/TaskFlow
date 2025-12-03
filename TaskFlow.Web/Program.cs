@@ -4,6 +4,7 @@ using TaskFlow.Application.Mappers;
 using TaskFlow.Application.Services;
 using TaskFlow.Core.Repositories;
 using TaskFlow.Infrastructure;
+using TaskFlow.Infrastructure.Caching;
 using TaskFlow.Infrastructure.Repositories;
 using TaskFlow.Web.Pages.TaskItems.Mappers;
 
@@ -11,7 +12,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-
+//caching
+builder.Services.AddMemoryCache();
+builder.Services.AddScoped<IProjectTitleCache, ProjectTitleCache>();
+//end caching
 builder.Services.AddAutoMapper(cfg => { }, typeof(TaskItemProfile), typeof(TaskItemUiProfile), typeof(ProjectProfile) /*, ...*/);
 
 // Register DbContext with connection string

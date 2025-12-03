@@ -16,12 +16,19 @@ public class TaskItemService : ITaskItemService
     private readonly IGenericRepository<TaskItem, Guid> _genericRepository;
     private readonly ITaskItemRepository _taskItemRepository;
     private readonly IMapper _mapper;
+    private readonly IProjectTitleCache _projectTitleCache;
 
-    public TaskItemService(IGenericRepository<TaskItem, Guid> genericRepository, ITaskItemRepository taskItemRepository, IMapper mapper)
+    public TaskItemService(
+        IGenericRepository<TaskItem, Guid> genericRepository,
+        ITaskItemRepository taskItemRepository,
+        IMapper mapper,
+        IProjectTitleCache projectTitleCache
+        )
     {
         _genericRepository = genericRepository;
         _taskItemRepository = taskItemRepository;
         _mapper = mapper;
+        _projectTitleCache = projectTitleCache;
     }
 
     public async Task<TaskItemViewDto?> GetDetailsAsync(Guid id, Guid ownerId)
@@ -87,7 +94,6 @@ public class TaskItemService : ITaskItemService
     public async Task<(IReadOnlyList<TaskItemDto> Items, int TotalCount)> GetFilteredItemsAsync(TaskItemFilter filter)
     {
         var spec = new TaskItemSpecification(filter);
-
         var selector = (Expression<Func<TaskItem, TaskItemDto>>)(t => new TaskItemDto
         {
             Id = t.Id,
@@ -97,7 +103,8 @@ public class TaskItemService : ITaskItemService
             Priority = t.Priority,
             Status = t.Status,
             ProjectId = t.ProjectId,
-            ProjectName = t.Project != null ? t.Project.Title : null,
+            ProjectTitle = t.Project != null ? t.Project.Title : null,
+            //ProjectTitle =  _projectTitleCache.GetTitleAsync(t.ProjectId),
             CreatedAt = t.CreatedAt,
             UpdatedAt = t.UpdatedAt
         });
