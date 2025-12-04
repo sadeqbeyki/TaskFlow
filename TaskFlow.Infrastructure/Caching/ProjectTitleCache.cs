@@ -9,12 +9,12 @@ public class ProjectTitleCache(IMemoryCache cache, IProjectRepository projectRep
     private readonly IMemoryCache _cache = cache;
     private readonly IProjectRepository _projectRepo = projectRepo;
 
-    public async Task<string> GetTitleAsync(Guid id)
+    public async Task<string> GetTitleAsync(Guid? id)
     {
         return await _cache.GetOrCreateAsync($"project-title-{id}", async e =>
         {
             e.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
-            var p = await _projectRepo.GetByIdAsync(id);
+            var p = await _projectRepo.GetProjectByIdAsync(id);
             return p?.Title ?? "";
         });
     }

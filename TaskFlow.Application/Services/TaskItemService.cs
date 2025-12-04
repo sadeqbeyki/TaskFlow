@@ -104,7 +104,6 @@ public class TaskItemService : ITaskItemService
             Status = t.Status,
             ProjectId = t.ProjectId,
             ProjectTitle = t.Project != null ? t.Project.Title : null,
-            //ProjectTitle =  _projectTitleCache.GetTitleAsync(t.ProjectId),
             CreatedAt = t.CreatedAt,
             UpdatedAt = t.UpdatedAt
         });

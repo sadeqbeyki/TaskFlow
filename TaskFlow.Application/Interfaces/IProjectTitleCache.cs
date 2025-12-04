@@ -2,6 +2,6 @@
 
 public interface IProjectTitleCache
 {
-    Task<string> GetTitleAsync(Guid projectId);
+    Task<string> GetTitleAsync(Guid? projectId);
 
 }

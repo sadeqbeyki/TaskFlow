@@ -11,7 +11,7 @@ public class TaskItemDto
     public TaskItemPriority Priority { get; set; }
     public TaskItemStatus Status { get; set; }
     public Guid? ProjectId { get; set; }
-    public object ProjectTitle { get; set; }
+    public string ProjectTitle { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
 }
