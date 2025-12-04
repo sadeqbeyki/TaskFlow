@@ -1,15 +1,17 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using TaskFlow.Application.DTOs.TaskItems;
 using TaskFlow.Application.Interfaces;
 using TaskFlow.Core.Filters;
+using TaskFlow.Web.Common;
 
 namespace TaskFlow.Web.Pages.TaskItems;
 
-public class IndexModel(ITaskItemService taskService) : PageModel
+public class IndexModel(ITaskItemService taskService, IProjectSummaryService projectSummaryService) : BasePageModel
 {
     private readonly ITaskItemService _taskItemService = taskService;
+    private readonly IProjectSummaryService _projectSummaryService = projectSummaryService;
 
+    public IReadOnlyList<ProjectSummaryDto> Projects { get; set; } = [];
     public IReadOnlyList<TaskItemDto> TaskItems { get; private set; } = Array.Empty<TaskItemDto>();
     public int TotalCount { get; private set; }
 
@@ -22,7 +24,7 @@ public class IndexModel(ITaskItemService taskService) : PageModel
         var result = await _taskItemService.GetFilteredItemsAsync(Filter);
         TaskItems = result.Items;
         TotalCount = result.TotalCount;
-
+        Projects = await _projectSummaryService.GetAllAsync(OwnerId);
     }
 
 }

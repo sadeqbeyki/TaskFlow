@@ -16,19 +16,18 @@ public class TaskItemService : ITaskItemService
     private readonly IGenericRepository<TaskItem, Guid> _genericRepository;
     private readonly ITaskItemRepository _taskItemRepository;
     private readonly IMapper _mapper;
-    private readonly IProjectTitleCache _projectTitleCache;
+    private readonly TaskItemMapper _taskItemMapper;
 
     public TaskItemService(
         IGenericRepository<TaskItem, Guid> genericRepository,
         ITaskItemRepository taskItemRepository,
         IMapper mapper,
-        IProjectTitleCache projectTitleCache
-        )
+        TaskItemMapper taskItemMapper)
     {
         _genericRepository = genericRepository;
         _taskItemRepository = taskItemRepository;
         _mapper = mapper;
-        _projectTitleCache = projectTitleCache;
+        _taskItemMapper = taskItemMapper;
     }
 
     public async Task<TaskItemViewDto?> GetDetailsAsync(Guid id, Guid ownerId)
@@ -42,8 +41,13 @@ public class TaskItemService : ITaskItemService
     public async Task<List<TaskItemDto>> GetAllByProjectAsync(Guid projectId, Guid ownerId)
     {
         var taskList = await _taskItemRepository.GetByProjectAsync(projectId);
+        //return _mapper.Map<List<TaskItemDto>>(taskList);
 
-        return _mapper.Map<List<TaskItemDto>>(taskList);
+        var dtos = new List<TaskItemDto>();
+
+        foreach (var t in taskList)
+            dtos.Add(await _taskItemMapper.MapAsync(t));
+        return dtos;
     }
 
     public async Task<bool> CreateAsync(TaskItemCreateDto dto, Guid ownerId)

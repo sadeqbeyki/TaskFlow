@@ -16,7 +16,10 @@ builder.Services.AddRazorPages();
 builder.Services.AddMemoryCache();
 builder.Services.AddScoped<IProjectTitleCache, ProjectTitleCache>();
 //end caching
+builder.Services.AddScoped<IProjectSummaryService, ProjectSummaryService>();
+
 builder.Services.AddAutoMapper(cfg => { }, typeof(TaskItemProfile), typeof(TaskItemUiProfile), typeof(ProjectProfile) /*, ...*/);
+builder.Services.AddScoped<TaskItemMapper>();
 
 // Register DbContext with connection string
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")

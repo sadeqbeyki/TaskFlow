@@ -117,7 +117,15 @@
             <option value="">All Priority</option>
         </select>
     </div>
-
+    <div class="col-md-2">
+        <select asp-for="Filter.ProjectId" class="form-select">
+            <option value="">All Projects</option>
+            @foreach (var p in Model.Projects)
+            {
+                <option value="@p.Id">@p.Name</option>
+            }
+        </select>
+    </div>
     <div class="col-md-1 d-grid">
         <button type="submit" class="btn btn-primary">Filter</button>
     </div>
