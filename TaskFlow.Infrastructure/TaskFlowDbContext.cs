@@ -1,9 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TaskFlow.Core.Entities;
 
 namespace TaskFlow.Infrastructure;
@@ -11,11 +7,6 @@ namespace TaskFlow.Infrastructure;
 public class TaskFlowDbContext : DbContext
 {
     public TaskFlowDbContext(DbContextOptions<TaskFlowDbContext> options) : base(options) { }
-
-
-    //public DbSet<User> Users { get; set; } = null!;
-    //public DbSet<Project> Projects { get; set; } = null!;
-    //public DbSet<TaskItem> TaskItems { get; set; } = null!;
 
     public DbSet<Project> Projects => Set<Project>();
     public DbSet<TaskItem> TaskItems => Set<TaskItem>();
@@ -31,7 +22,6 @@ public class TaskFlowDbContext : DbContext
             entity.ToTable("Users");
             entity.HasKey(u => u.Id);
 
-            // Example: configure relations & constraints
             entity.HasMany(u => u.Projects)
             .WithOne(p => p.Owner)
             .HasForeignKey(p => p.OwnerId)
@@ -86,6 +76,12 @@ public class TaskFlowDbContext : DbContext
             // Indexes
             entity.HasIndex(t => t.Status);
             entity.HasIndex(t => t.Priority);
+
+            entity.Property(t => t.ProjectId).IsRequired();
+            entity.HasOne(t => t.Project)
+                   .WithMany(p => p.Tasks)
+                   .HasForeignKey(t => t.ProjectId)
+                   .OnDelete(DeleteBehavior.Cascade);
         });
 
 

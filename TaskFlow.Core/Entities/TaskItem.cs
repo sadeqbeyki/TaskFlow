@@ -21,7 +21,7 @@ public class TaskItem
     private TaskItem() { }  
 
 
-    public TaskItem(string title, string? description, Guid? projectId, DateTime? dueDate = null,
+    public TaskItem(string title, string? description, Guid projectId, DateTime? dueDate = null,
         TaskItemPriority priority = TaskItemPriority.Medium)
     {
         if (string.IsNullOrWhiteSpace(title))
@@ -48,8 +48,8 @@ public class TaskItem
     public TaskItemPriority Priority { get; private set; }
     public TaskItemStatus Status { get; private set; }
 
-    public Guid? ProjectId { get; private set; }
-    public Project? Project { get; private set; }
+    public Guid ProjectId { get; private set; }
+    public Project Project { get; private set; } = default!;
 
     [DataType(DataType.Date)]
     public DateTime CreatedAt { get; private set; }
@@ -61,7 +61,7 @@ public class TaskItem
         string? description, 
         DateTime? dueDate, 
         TaskItemPriority priority, 
-        Guid? projectId)
+        Guid projectId)
     {
         if (string.IsNullOrWhiteSpace(title))
             throw new ArgumentException("The title cannot be empty.");

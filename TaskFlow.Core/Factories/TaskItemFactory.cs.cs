@@ -7,7 +7,7 @@ public static class TaskItemFactory
     public static TaskItem Create(
         string title,
         string? description,
-        Guid? projectId,
+        Guid projectId,
         DateTime? dueDate,
         TaskItemPriority priority = TaskItemPriority.Medium)
     {

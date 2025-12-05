@@ -11,30 +11,33 @@ using TaskFlow.Core.Repositories;
 
 namespace TaskFlow.Application.Services;
 
-public class TaskItemService : ITaskItemService
+public class TaskItemService : ITaskItemService, items
 {
     private readonly IGenericRepository<TaskItem, Guid> _genericRepository;
     private readonly ITaskItemRepository _taskItemRepository;
     private readonly IMapper _mapper;
     private readonly TaskItemMapper _taskItemMapper;
+    private readonly IProjectTitleCache _projectTitleCache;
 
     public TaskItemService(
         IGenericRepository<TaskItem, Guid> genericRepository,
         ITaskItemRepository taskItemRepository,
         IMapper mapper,
-        TaskItemMapper taskItemMapper)
+        TaskItemMapper taskItemMapper,
+        IProjectTitleCache projectTitleCache)
     {
         _genericRepository = genericRepository;
         _taskItemRepository = taskItemRepository;
         _mapper = mapper;
         _taskItemMapper = taskItemMapper;
+        _projectTitleCache = projectTitleCache;
     }
 
     public async Task<TaskItemViewDto?> GetDetailsAsync(Guid id, Guid ownerId)
     {
         var task = await _taskItemRepository.GetByIdWithProjectAsync(id, ownerId);
-        return task == null 
-            ? null 
+        return task == null
+            ? null
             : _mapper.Map<TaskItemViewDto>(task);
     }
 
@@ -107,12 +110,16 @@ public class TaskItemService : ITaskItemService
             Priority = t.Priority,
             Status = t.Status,
             ProjectId = t.ProjectId,
-            ProjectTitle = t.Project != null ? t.Project.Title : null,
+            //ProjectTitle = t.Project != null ? t.Project.Title : null,
             CreatedAt = t.CreatedAt,
             UpdatedAt = t.UpdatedAt
         });
 
         var dtos = await _taskItemRepository.ListAsync(spec, selector);
+
+        foreach (var dto in dtos)
+            dto.ProjectTitle = await _projectTitleCache.GetTitleAsync(dto.ProjectId);
+
         var totalCount = await _taskItemRepository.CountAsync(spec);
 
         return (dtos, totalCount);

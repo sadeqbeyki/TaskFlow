@@ -1,4 +1,5 @@
-﻿using TaskFlow.Application.DTOs.TaskItems;
+﻿using Microsoft.EntityFrameworkCore;
+using TaskFlow.Application.DTOs.TaskItems;
 using TaskFlow.Application.Interfaces;
 using TaskFlow.Core.Repositories;
 

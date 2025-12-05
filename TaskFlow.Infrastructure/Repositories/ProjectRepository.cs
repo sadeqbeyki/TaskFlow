@@ -17,11 +17,4 @@ public class ProjectRepository : GenericRepository<Project, Guid>, IProjectRepos
             .Include(p => p.Tasks)
             .ToListAsync();
     }
-
-    public async Task<Project> GetProjectByIdAsync(Guid? id)
-    {
-        return await _dbSet.FindAsync(id); // FindAsync = Tracking ON
-    }
-
-
 }

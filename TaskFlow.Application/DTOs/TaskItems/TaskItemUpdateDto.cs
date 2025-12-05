@@ -8,6 +8,6 @@ public class TaskItemUpdateDto
     public string? Description { get; set; }
     public DateTime? DueDate { get; set; }
     public TaskItemPriority Priority { get; set; }
-    public Guid? ProjectId { get; set; }
+    public Guid ProjectId { get; set; }
 }
 

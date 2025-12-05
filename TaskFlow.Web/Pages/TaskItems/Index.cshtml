@@ -79,7 +79,7 @@
 
 <form method="get" class="row g-3 mb-4">
 
-    <div class="col-md-4">
+    <div class="col-md-5">
         @*         <input type="text"
                name="Filter.SearchText"
                value="@Model.Filter.SearchText"
@@ -102,22 +102,7 @@
         </label>
     </div>
 
-    <div class="col-md-2">
-        <select asp-for="Filter.Status"
-                class="form-select"
-                asp-items="Html.GetEnumSelectList<TaskItemStatus>()">
-            <option value="">All Status</option>
-        </select>
-    </div>
-
-    <div class="col-md-2">
-        <select asp-for="Filter.Priority"
-                class="form-select"
-                asp-items="Html.GetEnumSelectList<TaskItemPriority>()">
-            <option value="">All Priority</option>
-        </select>
-    </div>
-    <div class="col-md-2">
+    <div class="col-md-4">
         <select asp-for="Filter.ProjectId" class="form-select">
             <option value="">All Projects</option>
             @foreach (var p in Model.Projects)
@@ -126,8 +111,24 @@
             }
         </select>
     </div>
-    <div class="col-md-1 d-grid">
-        <button type="submit" class="btn btn-primary">Filter</button>
+
+    <div class="col-md-4">
+        <select asp-for="Filter.Status"
+                class="form-select"
+                asp-items="Html.GetEnumSelectList<TaskItemStatus>()">
+            <option value="">All Status</option>
+        </select>
+    </div>
+
+    <div class="col-md-4">
+        <select asp-for="Filter.Priority"
+                class="form-select"
+                asp-items="Html.GetEnumSelectList<TaskItemPriority>()">
+            <option value="">All Priority</option>
+        </select>
+    </div>
+    <div class="col-md-4 d-grid">
+        <button type="submit" class="btn btn-outline-primary">Apply Filters</button>
     </div>
 </form>
 

@@ -10,7 +10,7 @@ public class TaskItemDto
     public DateTime? DueDate { get; set; }
     public TaskItemPriority Priority { get; set; }
     public TaskItemStatus Status { get; set; }
-    public Guid? ProjectId { get; set; }
+    public Guid ProjectId { get; set; }
     public string ProjectTitle { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
