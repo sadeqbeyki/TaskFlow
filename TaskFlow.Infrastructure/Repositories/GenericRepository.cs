@@ -18,6 +18,7 @@ public class GenericRepository<T, TKey> : IGenericRepository<T, TKey> where T : 
     {
         return await _dbSet.FindAsync(id); // FindAsync = Tracking ON
     }
+
     public async Task<List<T>> GetAllAsync()
     {
         return await _dbSet.AsNoTracking().ToListAsync();

@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using TaskFlow.Application.DTOs.TaskItems;
 using TaskFlow.Application.Interfaces;
+using TaskFlow.Core.Entities;
 using TaskFlow.Core.Filters;
 using TaskFlow.Web.Common;
+using TaskFlow.Web.Pages.TaskItems.Models;
 
 namespace TaskFlow.Web.Pages.TaskItems;
 
@@ -25,6 +27,18 @@ public class IndexModel(ITaskItemService taskService, IProjectSummaryService pro
         TaskItems = result.Items;
         TotalCount = result.TotalCount;
         Projects = await _projectSummaryService.GetAllAsync(OwnerId);
+    }
+    //[ValidateAntiForgeryToken]
+    public async Task<IActionResult> OnPostChangeStatusAsync([FromForm] Guid id, [FromForm] TaskItemStatusUpdateDto status)
+    {
+        var success = await _taskItemService.ChangeStatusAsync(id, status, OwnerId);
+
+        if (!success)
+        {
+            Console.WriteLine($"ChangeStatus failed: id={id}, status={status}, owner={OwnerId}");
+        }
+
+        return new JsonResult(new { ok = true });
     }
 
 }

@@ -11,7 +11,7 @@ using TaskFlow.Core.Repositories;
 
 namespace TaskFlow.Application.Services;
 
-public class TaskItemService : ITaskItemService, items
+public class TaskItemService : ITaskItemService
 {
     private readonly IGenericRepository<TaskItem, Guid> _genericRepository;
     private readonly ITaskItemRepository _taskItemRepository;
@@ -35,7 +35,7 @@ public class TaskItemService : ITaskItemService, items
 
     public async Task<TaskItemViewDto?> GetDetailsAsync(Guid id, Guid ownerId)
     {
-        var task = await _taskItemRepository.GetByIdWithProjectAsync(id, ownerId);
+        var task = await _taskItemRepository.GetWithProjectAsync(id, ownerId);
         return task == null
             ? null
             : _mapper.Map<TaskItemViewDto>(task);
@@ -96,8 +96,6 @@ public class TaskItemService : ITaskItemService, items
         return true;
     }
 
-    // ---------------------------------------------------------
-    // Begin-Filters
     public async Task<(IReadOnlyList<TaskItemDto> Items, int TotalCount)> GetFilteredItemsAsync(TaskItemFilter filter)
     {
         var spec = new TaskItemSpecification(filter);
@@ -124,24 +122,33 @@ public class TaskItemService : ITaskItemService, items
 
         return (dtos, totalCount);
     }
-    // End-Filters
-    // ---------------------------------------------------------
 
+    public async Task<bool> ChangeStatusAsync(Guid id, TaskItemStatusUpdateDto newStatus, Guid ownerId)
+    {
+        var task = await _taskItemRepository.GetWithProjectAsync(id,ownerId);
+        if (task == null) return false;
+        if (task.Project?.OwnerId != ownerId) return false;
 
-    // ---------------------------------------------------------
-    // Begin Status changes
-    public async Task<bool> ChangeStatusAsync(Guid id, TaskItemStatusUpdateDto dto, Guid ownerId)
-        => await _taskItemRepository.ChangeStatusAsync(id, dto.Status, ownerId);
+        switch (newStatus.Status)
+        {
+            case TaskItemStatus.Todo:
+                task.Reopen();
+                break;
 
-    public async Task<bool> MarkInProgressAsync(Guid id, Guid ownerId)
-        => await _taskItemRepository.MarkInProgressAsync(id, ownerId);
+            case TaskItemStatus.InProgress:
+                task.MarkInProgress();
+                break;
 
-    public async Task<bool> MarkDoneAsync(Guid id, Guid ownerId)
-        => await _taskItemRepository.MarkDoneAsync(id, ownerId);
+            case TaskItemStatus.Done:
+                task.MarkDone();
+                break;
 
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
 
-    public async Task<bool> ReopenAsync(Guid id, Guid ownerId)
-        => await _taskItemRepository.ReopenAsync(id, ownerId);
-    // End Status changes
-    // ---------------------------------------------------------
+        await _taskItemRepository.SaveAsync();
+        return true;
+    }
+
 }

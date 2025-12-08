@@ -199,7 +199,8 @@
     <tbody>
         @foreach (var task in Model.TaskItems)
         {
-            <tr>
+            <tr data-id="@task.Id">
+
                 <td>@task.Title</td>
 
                 <td>@task.Description</td>
@@ -215,10 +216,11 @@
                 <td>@task.CreatedAt.ToString("yyyy-MM-dd")</td>
 
                 <td>
-                    <span class="badge @StatusBadgeClass(task.Status)">
+                    <span class="badge @StatusBadgeClass(task.Status) status-badge">
                         <i class="bi @StatusIcon(task.Status)"></i>
                         @task.Status
                     </span>
+
                 </td>
                 <td>
                     @if (task.ProjectId != null)
@@ -232,6 +234,32 @@
                 </td>
 
                 <td class="text-center">
+
+                    <div class="btn-group me-2">
+
+                        <button class="btn btn-sm btn-outline-primary btn-start"
+                                onclick="changeStatus('@task.Id','InProgress')"
+                                @(task.Status != TaskItemStatus.Todo ? "disabled" : "")>
+                            Start
+                        </button>
+
+                        <button class="btn btn-sm btn-outline-success btn-done"
+                                onclick="changeStatus('@task.Id','Done')"
+                                @(task.Status != TaskItemStatus.InProgress ? "disabled" : "")>
+                            Done
+                        </button>
+
+                        <button class="btn btn-sm btn-outline-warning btn-reopen"
+                                onclick="changeStatus('@task.Id','Todo')"
+                                @(task.Status != TaskItemStatus.Done ? "disabled" : "")>
+                            Reopen
+                        </button>
+
+                        <form method="post">
+                            @Html.AntiForgeryToken()
+                        </form>
+                    </div>
+
                     <a asp-page="/TaskItems/Edit"
                        asp-route-id="@task.Id"
                        class="btn btn-sm btn-outline-secondary me-1">
@@ -279,4 +307,65 @@
         }
     </ul>
 </nav>
+
+<script>
+    const antiForgeryToken =
+        document.querySelector('input[name="__RequestVerificationToken"]').value;
+</script>
+
+<script>
+        function changeStatus(id, status) {
+
+        const body = new URLSearchParams({
+            id: id,
+            "status.Status": status
+        });
+
+        fetch(`?handler=ChangeStatus`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "RequestVerificationToken": antiForgeryToken
+            },
+            body: body.toString()
+        })
+        .then(res => res.ok ? res.json() : null)
+        .then(data => {
+            if (!data?.ok) {
+                alert("Failed.");
+                return;
+            }
+
+            const row = document.querySelector(`tr[data-id="${id}"]`);
+            if (!row) return;
+
+            const statusBadge = row.querySelector(".status-badge");
+
+            const statusMap = {
+                "Todo": { cls: "bg-secondary", icon: "bi-circle" },
+                "InProgress": { cls: "bg-info text-dark", icon: "bi-arrow-repeat" },
+                "Done": { cls: "bg-success", icon: "bi-check-circle-fill" }
+            };
+
+            const s = statusMap[status];
+            statusBadge.className = "badge status-badge " + s.cls;
+            statusBadge.innerHTML = `<i class="bi ${s.icon}"></i> ${status}`;
+
+            const btnStart  = row.querySelector(".btn-start");
+            const btnDone   = row.querySelector(".btn-done");
+            const btnReopen = row.querySelector(".btn-reopen");
+
+            btnStart.disabled  = (status !== "Todo");
+            btnDone.disabled   = (status !== "InProgress");
+            btnReopen.disabled = (status !== "Done");
+
+            row.className = {
+                "Done": "table-success",
+                "InProgress": "table-warning",
+                "Todo": "table-danger text-dark"
+            }[status];
+        });
+    }
+
+</script>
 

@@ -8,74 +8,12 @@ namespace TaskFlow.Infrastructure.Repositories;
 
 public class TaskItemRepository(TaskFlowDbContext context) : GenericRepository<TaskItem, Guid>(context), ITaskItemRepository
 {
-    public async Task<TaskItem?> GetByIdWithProjectAsync(Guid id, Guid ownerId)
+    public async Task<TaskItem?> GetWithProjectAsync(Guid id, Guid ownerId)
     {
         return await _context.TaskItems
             .Include(p => p.Project)
             .FirstOrDefaultAsync(t => t.Id == id);
 
-    }
-    public async Task<bool> ChangeStatusAsync(Guid id, TaskItemStatus status, Guid ownerId)
-    {
-        var task = await _context.TaskItems
-            .Include(t => t.Project)
-            .FirstOrDefaultAsync(t => t.Id == id);
-
-        if (task == null) return false;
-        if (task.Project != null && task.Project.OwnerId != ownerId) return false; // not authorized
-
-        // Use domain methods to change status (keeps rules inside entity)
-        switch (status)
-        {
-            case TaskItemStatus.Todo:
-                // Reopen expects it was Done
-                if (task.Status == TaskItemStatus.Done)
-                    task.Reopen();
-                else
-                    task.UpdateDetails(task.Title, task.Description, task.DueDate, task.Priority, task.ProjectId); // no-op but update timestamp? (we keep no-op)
-                break;
-            case TaskItemStatus.InProgress:
-                task.MarkInProgress();
-                break;
-            case TaskItemStatus.Done:
-                task.MarkDone();
-                break;
-            default:
-                break;
-        }
-
-        await _context.SaveChangesAsync();
-        return true;
-    }
-
-    public async Task<bool> MarkInProgressAsync(Guid id, Guid ownerId)
-    {
-        var task = await _context.TaskItems.Include(t => t.Project).FirstOrDefaultAsync(t => t.Id == id);
-        if (task == null || task.Project?.OwnerId != ownerId) return false;
-
-        task.MarkInProgress();
-        await _context.SaveChangesAsync();
-        return true;
-    }
-
-    public async Task<bool> MarkDoneAsync(Guid id, Guid ownerId)
-    {
-        var task = await _context.TaskItems.Include(t => t.Project).FirstOrDefaultAsync(t => t.Id == id);
-        if (task == null || task.Project?.OwnerId != ownerId) return false;
-
-        task.MarkDone();
-        await _context.SaveChangesAsync();
-        return true;
-    }
-
-    public async Task<bool> ReopenAsync(Guid id, Guid ownerId)
-    {
-        var task = await _context.TaskItems.Include(t => t.Project).FirstOrDefaultAsync(t => t.Id == id);
-        if (task == null || task.Project?.OwnerId != ownerId) return false;
-
-        task.Reopen();
-        await _context.SaveChangesAsync();
-        return true;
     }
 
     public async Task<List<TaskItem>> GetByProjectAsync(Guid projectId)
@@ -103,13 +41,11 @@ public class TaskItemRepository(TaskFlowDbContext context) : GenericRepository<T
     }
 
     // Begin Filter
-    // Begin_InBigDB
     public async Task<List<TResult>> ListAsync<TResult>(ISpecification<TaskItem> spec, Expression<Func<TaskItem, TResult>> selector, CancellationToken cancellationToken = default)
     {
         var query = ApplySpecification(_context.TaskItems.AsQueryable(), spec);
         return await query.Select(selector).ToListAsync(cancellationToken);
     }
-    // End_InBigDB
 
     public async Task<int> CountAsync(ISpecification<TaskItem> spec, CancellationToken cancellationToken = default)
     {
@@ -146,4 +82,8 @@ public class TaskItemRepository(TaskFlowDbContext context) : GenericRepository<T
     }
 
     // End Filter
+
+    public async Task SaveAsync() => await _context.SaveChangesAsync();
+
+
 }
