@@ -42,7 +42,7 @@ public class ProjectService : IProjectService
 
     public async Task<Guid> CreateAsync(ProjectCreateDto dto, Guid ownerId)
     {
-        var project = new Project(dto.Title.Trim(), dto.Description, ownerId);
+        var project = new Project(dto.Title, dto.Description, ownerId);
 
         await _genericRepository.AddAsync(project);
 
@@ -56,7 +56,7 @@ public class ProjectService : IProjectService
         if (project is null)
             return false;
 
-        project.UpdateDetails(dto.Title.Trim(), dto.Description);
+        project.UpdateDetails(dto.Title, dto.Description);
 
         await _genericRepository.UpdateAsync(project);
 

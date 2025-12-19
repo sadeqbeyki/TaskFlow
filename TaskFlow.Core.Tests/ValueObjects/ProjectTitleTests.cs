@@ -1,4 +1,5 @@
-﻿using TaskFlow.Core.ValueObjects;
+﻿using TaskFlow.Core.Exceptions;
+using TaskFlow.Core.ValueObjects;
 
 namespace TaskFlow.Core.Tests.ValueObjects;
 
@@ -17,14 +18,14 @@ public class ProjectTitleTests
     [Fact]
     public void Create_WithWhitespace_ShouldThrowException()
     {
-        Assert.Throws<ArgumentException>(() =>
+        Assert.Throws<DomainException>(() =>
             new ProjectTitle("   "));
     }
 
     [Fact]
     public void Create_WithEmptyString_ShouldThrowException()
     {
-        Assert.Throws<ArgumentException>(() =>
+        Assert.Throws<DomainException>(() =>
             new ProjectTitle(string.Empty));
     }
 
