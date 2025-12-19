@@ -35,8 +35,9 @@ public class TaskFlowDbContext(DbContextOptions<TaskFlowDbContext> options) : Db
             entity.HasKey(p => p.Id);
 
             entity.Property(p => p.Title)
-                  .IsRequired()
-                  .HasMaxLength(100);
+                .HasConversion(new ProjectTitleConverter())
+                .IsRequired()
+                .HasMaxLength(100);
 
             entity.Property(p => p.Description)
                   .HasMaxLength(500);
