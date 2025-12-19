@@ -1,4 +1,5 @@
 ﻿using TaskFlow.Core.Entities;
+using TaskFlow.Core.ValueObjects;
 
 namespace TaskFlow.Core.Factories;
 
@@ -11,15 +12,13 @@ public static class TaskItemFactory
         DateTime? dueDate,
         TaskItemPriority priority = TaskItemPriority.Medium)
     {
-        if (string.IsNullOrWhiteSpace(title))
-            throw new ArgumentException("Title cannot be empty.");
-
         if (dueDate.HasValue && dueDate.Value.Date < DateTime.UtcNow.Date)
             throw new ArgumentException("Due date cannot be in the past.");
 
+        var taskTitle = new TaskTitle(title);
 
         return new TaskItem(
-            title: title.Trim(),
+            title: taskTitle,
             description: description,
             projectId: projectId,
             dueDate: dueDate,
