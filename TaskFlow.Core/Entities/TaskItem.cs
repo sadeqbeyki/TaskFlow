@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using TaskFlow.Core.ValueObjects;
 
 namespace TaskFlow.Core.Entities;
 
@@ -21,13 +22,10 @@ public class TaskItem
     private TaskItem() { }  
 
 
-    public TaskItem(string title, string? description, Guid projectId, DateTime? dueDate = null,
+    public TaskItem(TaskTitle title, string? description, Guid projectId, DateTime? dueDate = null,
         TaskItemPriority priority = TaskItemPriority.Medium)
     {
-        if (string.IsNullOrWhiteSpace(title))
-            throw new ArgumentException("The title cannot be empty.");
-
-        Title = title.Trim();
+        Title = title;
         Description = description?.Trim();
         ProjectId = projectId;
         DueDate = dueDate;
@@ -40,7 +38,7 @@ public class TaskItem
     public Guid Id { get; private set; } = Guid.NewGuid();
     [Required(ErrorMessage = "Title is required.")]
     [StringLength(100, ErrorMessage = "The title should not exceed 100 characters.")]
-    public string Title { get; private set; } =string.Empty;
+    public TaskTitle Title { get; private set; }
     [StringLength(500, ErrorMessage = "Descriptions should not exceed 500 characters.")]
     public string? Description { get; private set; }
     public DateTime? DueDate { get; private set; }
@@ -57,16 +55,13 @@ public class TaskItem
 
     // Domain Behaviors
     public void UpdateDetails(
-        string title, 
+        TaskTitle title, 
         string? description, 
         DateTime? dueDate, 
         TaskItemPriority priority, 
         Guid projectId)
     {
-        if (string.IsNullOrWhiteSpace(title))
-            throw new ArgumentException("The title cannot be empty.");
-
-        Title = title.Trim();
+        Title = title;
         Description = description?.Trim();
         DueDate = dueDate;
         Priority = priority;
