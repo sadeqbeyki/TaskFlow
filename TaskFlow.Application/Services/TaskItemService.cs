@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using System.Linq.Expressions;
+using TaskFlow.Application.Common.Exceptions;
 using TaskFlow.Application.DTOs.TaskItems;
 using TaskFlow.Application.Interfaces;
 using TaskFlow.Application.Mappers;
 using TaskFlow.Application.Specifications;
 using TaskFlow.Core.Entities;
+using TaskFlow.Core.Exceptions;
 using TaskFlow.Core.Factories;
 using TaskFlow.Core.Filters;
 using TaskFlow.Core.Repositories;
@@ -59,18 +61,23 @@ public class TaskItemService : ITaskItemService
 
         if (!projectExists)
             throw new UnauthorizedAccessException("Project does not belong to this user.");
+        try
+        {
+            var task = TaskItemFactory.Create(
+                dto.Title,
+                dto.Description,
+                dto.ProjectId,
+                dto.DueDate,
+                dto.Priority
+            );
 
-        var task = TaskItemFactory.Create(
-            dto.Title,
-            dto.Description,
-            dto.ProjectId,
-            dto.DueDate,
-            dto.Priority
-        );
-
-        await _genericRepository.AddAsync(task);
-
-        return true;
+            await _genericRepository.AddAsync(task);
+            return true;
+        }
+        catch (DomainException ex)
+        {
+            throw new ApplicationValidationException(ex.Message);
+        }
     }
 
     public async Task<bool> UpdateAsync(Guid id, TaskItemUpdateDto dto, Guid ownerId)
@@ -125,7 +132,7 @@ public class TaskItemService : ITaskItemService
 
     public async Task<bool> ChangeStatusAsync(Guid id, TaskItemStatusUpdateDto newStatus, Guid ownerId)
     {
-        var task = await _taskItemRepository.GetWithProjectAsync(id,ownerId);
+        var task = await _taskItemRepository.GetWithProjectAsync(id, ownerId);
         if (task == null) return false;
         if (task.Project?.OwnerId != ownerId) return false;
 
