@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using TaskFlow.Core.ValueObjects;
 
 namespace TaskFlow.Core.Entities;
 
@@ -13,9 +13,9 @@ public class Project
 
 
     // Constructor for creating a new project in domain logic
-    public Project(string title, string? description, Guid ownerId)
+    public Project(ProjectTitle title, string? description, Guid ownerId)
     {
-        Title = string.IsNullOrWhiteSpace(title) ? throw new ArgumentException("Title cannot be empty.") : title.Trim();
+        Title = title;
 
         Description = description?.Trim();
         OwnerId = ownerId;
@@ -26,15 +26,11 @@ public class Project
     // Properties
     public Guid Id { get; private set; } = Guid.NewGuid();
 
-    [Required(ErrorMessage = "Project title is required.")]
-    [StringLength(100, ErrorMessage = "Title must not exceed 100 characters.")]
-    public string Title { get; private set; } = string.Empty;
+    public ProjectTitle Title { get; private set; }
 
-    [StringLength(500, ErrorMessage = "Description must not exceed 500 characters.")]
     public string? Description { get; private set; }
 
 
-    [DataType(DataType.Date)]
     public DateTime CreatedAt { get; private set; }
     public DateTime? UpdatedAt { get; private set; }
 
@@ -46,22 +42,16 @@ public class Project
 
 
     // Domain Behaviors
-    public void UpdateDetails(string title, string? description)
+    public void UpdateDetails(ProjectTitle title, string? description)
     {
-        if (string.IsNullOrWhiteSpace(title))
-            throw new ArgumentException("Project title cannot be empty.");
-
-        Title = title.Trim();
+        Title = title;
         Description = description?.Trim();
         UpdatedAt = DateTime.UtcNow;
     }
 
-    public TaskItem AddTask(string title, string? description, DateTime? dueDate = null,
+    public TaskItem AddTask(TaskTitle title, string? description, DateTime? dueDate = null,
                             TaskItemPriority priority = TaskItemPriority.Medium)
     {
-        if (string.IsNullOrWhiteSpace(title))
-            throw new ArgumentException("Task title cannot be empty.");
-
         var task = new TaskItem(title, description, Id, dueDate, priority);
         var mutableTasks = Tasks.ToList();
         mutableTasks.Add(task);
