@@ -1,13 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
 using TaskFlow.Core.Entities;
+using TaskFlow.Infrastructure.Persistence.Converters;
 
-namespace TaskFlow.Infrastructure;
+namespace TaskFlow.Infrastructure.Persistence;
 
-public class TaskFlowDbContext : DbContext
+public class TaskFlowDbContext(DbContextOptions<TaskFlowDbContext> options) : DbContext(options)
 {
-    public TaskFlowDbContext(DbContextOptions<TaskFlowDbContext> options) : base(options) { }
-
     public DbSet<Project> Projects => Set<Project>();
     public DbSet<TaskItem> TaskItems => Set<TaskItem>();
     public DbSet<User> Users => Set<User>();
@@ -57,8 +55,9 @@ public class TaskFlowDbContext : DbContext
             entity.HasKey(t => t.Id);
 
             entity.Property(t => t.Title)
-                  .IsRequired()
-                  .HasMaxLength(100);
+                    .HasConversion(new TaskTitleConverter())
+                    .IsRequired()
+                    .HasMaxLength(100);
 
             entity.Property(t => t.Description)
                   .HasMaxLength(500);
