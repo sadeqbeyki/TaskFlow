@@ -18,15 +18,17 @@ public class ProjectTitleTests
     [Fact]
     public void Create_WithWhitespace_ShouldThrowException()
     {
-        Assert.Throws<DomainException>(() =>
+        var ex = Assert.Throws<DomainException>(() =>
             new ProjectTitle("   "));
     }
 
     [Fact]
     public void Create_WithEmptyString_ShouldThrowException()
     {
-        Assert.Throws<DomainException>(() =>
+        var ex = Assert.Throws<DomainException>(() =>
             new ProjectTitle(string.Empty));
+
+        Assert.Equal("Project title cannot be empty.", ex.Message);
     }
 
     [Fact]

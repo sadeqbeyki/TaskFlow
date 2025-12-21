@@ -21,9 +21,12 @@ public class TaskItem
 {
     private TaskItem() { }  
 
-
-    public TaskItem(TaskTitle title, string? description, Guid projectId, DateTime? dueDate = null,
-        TaskItemPriority priority = TaskItemPriority.Medium)
+    internal TaskItem(
+    TaskTitle title,
+    string? description,
+    Guid projectId,
+    DateTime? dueDate,
+    TaskItemPriority priority)
     {
         Title = title;
         Description = description?.Trim();
@@ -34,7 +37,6 @@ public class TaskItem
         CreatedAt = DateTime.UtcNow;
     }
 
-    // Properties
     public Guid Id { get; private set; } = Guid.NewGuid();
     [Required(ErrorMessage = "Title is required.")]
     [StringLength(100, ErrorMessage = "The title should not exceed 100 characters.")]

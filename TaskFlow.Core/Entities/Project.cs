@@ -1,19 +1,17 @@
-﻿using TaskFlow.Core.ValueObjects;
+﻿using TaskFlow.Core.Factories;
+using TaskFlow.Core.ValueObjects;
 
 namespace TaskFlow.Core.Entities;
 
 public class Project
 {
-    // Parameterless Constructor for EF Core and object initializers
-
-    public Project()
+    protected Project()
     {
         Tasks = new List<TaskItem>();
     }
 
 
-    // Constructor for creating a new project in domain logic
-    public Project(ProjectTitle title, string? description, Guid ownerId)
+    internal Project(ProjectTitle title, string? description, Guid ownerId)
     {
         Title = title;
 
@@ -23,20 +21,12 @@ public class Project
         Tasks = new List<TaskItem>();
     }
 
-    // Properties
     public Guid Id { get; private set; } = Guid.NewGuid();
-
     public ProjectTitle Title { get; private set; }
-
     public string? Description { get; private set; }
-
-
     public DateTime CreatedAt { get; private set; }
     public DateTime? UpdatedAt { get; private set; }
-
     public Guid? OwnerId { get; private set; }
-
-    // Navigation
     public User? Owner { get; private set; }
     public IReadOnlyCollection<TaskItem> Tasks { get; private set; } = new List<TaskItem>();
 
@@ -49,10 +39,13 @@ public class Project
         UpdatedAt = DateTime.UtcNow;
     }
 
-    public TaskItem AddTask(TaskTitle title, string? description, DateTime? dueDate = null,
-                            TaskItemPriority priority = TaskItemPriority.Medium)
+    public TaskItem AddTask(
+        TaskTitle title,
+        string? description,
+        DateTime? dueDate = null,
+        TaskItemPriority priority = TaskItemPriority.Medium)
     {
-        var task = new TaskItem(title, description, Id, dueDate, priority);
+        var task = TaskItemFactory.Create(title, description, Id, dueDate, priority);
         var mutableTasks = Tasks.ToList();
         mutableTasks.Add(task);
         Tasks = mutableTasks.AsReadOnly();
