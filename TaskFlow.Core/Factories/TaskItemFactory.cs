@@ -1,4 +1,5 @@
 ﻿using TaskFlow.Core.Entities;
+using TaskFlow.Core.Exceptions;
 using TaskFlow.Core.ValueObjects;
 
 namespace TaskFlow.Core.Factories;
@@ -13,7 +14,7 @@ internal static class TaskItemFactory
         TaskItemPriority priority = TaskItemPriority.Medium)
     {
         if (dueDate.HasValue && dueDate.Value.Date < DateTime.UtcNow.Date)
-            throw new ArgumentException("Due date cannot be in the past.");
+            throw new DomainException("Due date cannot be in the past.");
 
         return new TaskItem(
             title: title,
