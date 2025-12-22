@@ -9,10 +9,10 @@ namespace TaskFlow.Application.Services;
 public class ProjectService : IProjectService
 {
     private readonly IGenericRepository<Project, Guid> _genericRepository;
-    private readonly IProjectRepository _projectRepository;
+    private readonly TaskFlow.Core.Repositories.IProjectRepository _projectRepository;
     private readonly IMapper _mapper;
 
-    public ProjectService(IGenericRepository<Project, Guid> genericRepository, IProjectRepository projectRepository, IMapper mapper)
+    public ProjectService(IGenericRepository<Project, Guid> genericRepository, TaskFlow.Core.Repositories.IProjectRepository projectRepository, IMapper mapper)
     {
         _genericRepository = genericRepository;
         _projectRepository = projectRepository;
@@ -56,7 +56,7 @@ public class ProjectService : IProjectService
         if (project is null)
             return false;
 
-        project.UpdateDetails(dto.Title.Trim(), dto.Description);
+        project.UpdateDetails(dto.Title, dto.Description);
 
         await _genericRepository.UpdateAsync(project);
 

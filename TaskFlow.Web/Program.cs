@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using TaskFlow.Application.Abstractions;
 using TaskFlow.Application.Interfaces;
 using TaskFlow.Application.Mappers;
 using TaskFlow.Application.Services;
@@ -33,6 +34,8 @@ builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<ITaskItemService, TaskItemService>();
 
 // Repository & generic repo
+builder.Services.AddScoped<IUnitOfWork, EfUnitOfWork>();
+
 builder.Services.AddScoped(typeof(IGenericRepository<,>), typeof(GenericRepository<,>));
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<ITaskItemRepository, TaskItemRepository>();
