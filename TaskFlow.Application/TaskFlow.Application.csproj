@@ -15,4 +15,8 @@
     <ProjectReference Include="..\TaskFlow.Core\TaskFlow.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="UseCases\TaskItems\" />
+  </ItemGroup>
+
 </Project>
