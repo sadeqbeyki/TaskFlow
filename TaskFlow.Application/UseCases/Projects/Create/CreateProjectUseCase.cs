@@ -4,6 +4,11 @@ using TaskFlow.Core.Factories;
 
 namespace TaskFlow.Application.UseCases.Projects.Create;
 
+public interface ICreateProjectUseCase
+{
+    Task<CreateProjectResult> HandleAsync(CreateProjectCommand command, CancellationToken cancellationToken = default);
+}
+
 public sealed class CreateProjectUseCase
 {
     private readonly IProjectRepository _projectRepository;

@@ -40,14 +40,14 @@ public class ProjectService : IProjectService
         return projectList;
     }
 
-    public async Task<Guid> CreateAsync(ProjectCreateDto dto, Guid ownerId)
-    {
-        var project = new Project(dto.Title.Trim(), dto.Description, ownerId);
+    //public async Task<Guid> CreateAsync(ProjectCreateDto dto, Guid ownerId)
+    //{
+    //    var project = new Project(dto.Title.Trim(), dto.Description, ownerId);
 
-        await _genericRepository.AddAsync(project);
+    //    await _genericRepository.AddAsync(project);
 
-        return project.Id;
-    }
+    //    return project.Id;
+    //}
 
     public async Task<bool> UpdateAsync(Guid projectId, ProjectUpdateDto dto, Guid ownerId)
     {

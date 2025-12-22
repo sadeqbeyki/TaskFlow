@@ -3,16 +3,17 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using TaskFlow.Application.DTOs.Projects;
 using TaskFlow.Application.Interfaces;
 using System.Security.Claims;
+using TaskFlow.Application.UseCases.Projects.Create;
 
 namespace TaskFlow.Web.Pages.Projects;
 
 public class CreateModel : PageModel
 {
-    private readonly IProjectService _projectService;
+    private readonly ICreateProjectUseCase _createProject;
 
-    public CreateModel(IProjectService projectService)
+    public CreateModel(ICreateProjectUseCase createProject)
     {
-        _projectService = projectService;
+        _createProject = createProject;
     }
 
     [BindProperty]
@@ -26,7 +27,7 @@ public class CreateModel : PageModel
 
         var ownerId = _fakeOwnerId;
 
-        var newId = await _projectService.CreateAsync(Input, ownerId);
+        var newId = await _createProject.HandleAsync(new CreateProjectCommand("", "", ownerId));
         TempData["Message"] = "Project created successfully.";
         return RedirectToPage("./Index");
     }
