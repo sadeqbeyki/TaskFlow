@@ -1,10 +1,11 @@
 ﻿using TaskFlow.Core.Entities;
 
-namespace TaskFlow.Application.Interfaces
+namespace TaskFlow.Application.Interfaces;
+
+public interface IProjectRepository
 {
-    public interface IProjectRepository
-    {
-        void Add(Project project);
-        Task<Project?> GetByIdAsync(Guid id);
-    }
+    Task<Project?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+    Task<IReadOnlyList<Project>> GetAllAsync();
+    void Add(Project project);
+    void Remove(Project project);
 }

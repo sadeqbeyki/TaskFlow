@@ -13,15 +13,25 @@ public sealed class ProjectRepository : IProjectRepository
         _context = context;
     }
 
-    public void Add(Project project)
-    {
-        _context.Projects.Add(project);
-    }
-
-    public async Task<Project?> GetByIdAsync(Guid id)
+    public async Task<Project?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         return await _context.Projects
             .Include(p => p.Tasks)
             .FirstOrDefaultAsync(p => p.Id == id);
     }
+    public async Task<IReadOnlyList<Project>> GetAllAsync()
+    {
+        return await _context.Projects
+            .AsNoTracking()
+            .ToListAsync();
+    }
+    public void Add(Project project)
+    {
+        _context.Projects.Add(project);
+    }
+    public void Remove(Project project)
+    {
+        _context.Projects.Remove(project);
+    }
+
 }
