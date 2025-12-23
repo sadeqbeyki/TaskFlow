@@ -9,11 +9,11 @@ using Microsoft.Extensions.Caching.Memory;
 public sealed class ProjectTitleCache : IProjectTitleCache
 {
     private readonly IMemoryCache _cache;
-    private readonly IProjectRepository _projectRepository;
+    private readonly Core.Repositories.IProjectRepository _projectRepository;
 
     private readonly MemoryCacheEntryOptions _options;
 
-    public ProjectTitleCache(IMemoryCache cache, IProjectRepository repo)
+    public ProjectTitleCache(IMemoryCache cache, Core.Repositories.IProjectRepository repo)
     {
         _cache = cache;
         _projectRepository = repo;
