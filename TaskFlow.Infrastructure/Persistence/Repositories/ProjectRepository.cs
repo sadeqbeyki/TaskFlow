@@ -13,7 +13,7 @@ public sealed class ProjectRepository : IProjectRepository
         _context = context;
     }
 
-    public async Task<Project?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<Project?> GetByIdAsync(Guid id)
     {
         return await _context.Projects
             .Include(p => p.Tasks)

@@ -23,7 +23,7 @@ public sealed class UpdateProjectUseCase
         CancellationToken cancellationToken = default)
     {
         var project = await _projectRepository
-            .GetByIdAsync(command.ProjectId);
+            .GetByIdAsync(command.ProjectId,cancellationToken);
 
         if (project is null)
             throw new NotFoundException(

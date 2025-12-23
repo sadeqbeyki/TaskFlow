@@ -22,8 +22,7 @@ public sealed class DeleteProjectUseCase
         CancellationToken cancellationToken = default)
     {
         var project = await _projectRepository.GetByIdAsync(
-            command.ProjectId,
-            cancellationToken);
+            command.ProjectId);
 
         if (project is null)
             throw new NotFoundException(
