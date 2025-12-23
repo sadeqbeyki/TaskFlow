@@ -7,9 +7,9 @@ namespace TaskFlow.Application.Services;
 
 public class ProjectSummaryService : IProjectSummaryService
 {
-    private readonly TaskFlow.Core.Repositories.IProjectRepository _repo;
+    private readonly Core.Repositories.IProjectRepository _repo;
 
-    public ProjectSummaryService(TaskFlow.Core.Repositories.IProjectRepository repo)
+    public ProjectSummaryService(Core.Repositories.IProjectRepository repo)
     {
         _repo = repo;
     }

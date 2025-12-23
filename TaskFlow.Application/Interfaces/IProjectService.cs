@@ -7,7 +7,7 @@ public interface IProjectService
     Task<ProjectDto?> GetByIdAsync(Guid id, Guid ownerId);
     Task<List<ProjectDto>> GetAllByUserAsync(Guid ownerId);
 
-    //Task<Guid> CreateAsync(ProjectCreateDto dto, Guid ownerId);
+    Task<Guid> CreateAsync(ProjectCreateDto dto, Guid ownerId);
     Task<bool> UpdateAsync(Guid id, ProjectUpdateDto dto, Guid ownerId);
     Task<bool> DeleteAsync(Guid id, Guid ownerId);
 }
